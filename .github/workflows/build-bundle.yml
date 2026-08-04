@@ -1,0 +1,158 @@
+name: Build Lean + Mathlib bundle
+
+# Publishes a prebuilt Lean toolchain + Mathlib olean set as Actions artifacts,
+# so an agent whose workspace has no internet can obtain a working Lean by
+# downloading artifacts through the GitHub connector.
+#
+# Public repository on purpose: Actions minutes and artifact storage are free
+# here, and everything published is upstream Apache-2.0 software. No private
+# content is involved - the only inputs are lean-toolchain and lake-manifest.json,
+# which contain nothing but upstream revision pins.
+#
+# The bundle is emitted BOTH as one full artifact and as ~100 MB parts, because
+# the consuming connector may not manage a single multi-hundred-MB download.
+# Part count is capped at 20 so artifact enumeration stays on its first page.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Monthly. Artifacts expire after 90 days; this keeps a fresh set available.
+    - cron: "0 5 1 * *"
+
+permissions:
+  contents: read
+
+env:
+  CHUNK_MB: 100
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    outputs:
+      bundle_bytes: ${{ steps.pack.outputs.bytes }}
+      bundle_sha256: ${{ steps.pack.outputs.sha256 }}
+      parts: ${{ steps.pack.outputs.parts }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Hosted runners have ~14 GB free; the toolchain plus oleans plus the
+      # stream can crowd that, so reclaim the preinstalled images we do not use.
+      - name: Reclaim disk
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+                      /usr/local/share/boost "$AGENT_TOOLSDIRECTORY" 2>/dev/null || true
+          df -h / | tail -1
+
+      - name: Install elan and the pinned toolchain
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o elan-init.sh
+          sh elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies and fetch Mathlib oleans
+        run: |
+          elan toolchain install "$(cat lean-toolchain)"
+          lake exe cache get 2>&1 | tail -5
+          echo "--- sizes ---"
+          du -sh "$HOME/.elan" .lake
+
+      - name: Verify the bundle actually typechecks Mathlib
+        run: |
+          cat > /tmp/Probe.lean <<'LEAN'
+          import Mathlib
+          example : 2 + 2 = 4 := by norm_num
+          LEAN
+          lake env lean /tmp/Probe.lean && echo "PROBE OK: Mathlib imports and elaborates"
+
+      - name: Pack
+        id: pack
+        run: |
+          mkdir -p out
+          # Stream straight into split: no intermediate tarball, saving ~1.2 GB.
+          tar -C "$HOME" -cf - .elan \
+              -C "$GITHUB_WORKSPACE" .lake lean-toolchain lakefile.toml lake-manifest.json \
+            | zstd -3 -T0 \
+            | split -b "${CHUNK_MB}m" -d -a 2 - out/bundle.tar.zst.part
+          cat out/bundle.tar.zst.part* > out/bundle.tar.zst.check 2>/dev/null || true
+          BYTES=$(stat -c%s out/bundle.tar.zst.check)
+          SHA=$(sha256sum out/bundle.tar.zst.check | cut -d' ' -f1)
+          rm -f out/bundle.tar.zst.check
+          N=$(ls out/bundle.tar.zst.part* | wc -l)
+          {
+            echo "toolchain: $(cat lean-toolchain)"
+            echo "mathlib_rev: $(python3 -c "import json;print([p['rev'] for p in json.load(open('lake-manifest.json'))['packages'] if p['name']=='mathlib'][0])")"
+            echo "bundle_bytes: $BYTES"
+            echo "bundle_sha256: $SHA"
+            echo "parts: $N"
+            echo "chunk_mb: ${CHUNK_MB}"
+            echo "built_utc: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo
+            echo "# part  bytes  sha256"
+            for f in out/bundle.tar.zst.part*; do
+              echo "$(basename "$f")  $(stat -c%s "$f")  $(sha256sum "$f" | cut -d' ' -f1)"
+            done
+          } > out/MANIFEST.txt
+          cp reassemble.sh out/ 2>/dev/null || true
+          cat out/MANIFEST.txt
+          echo "bytes=$BYTES"  >> "$GITHUB_OUTPUT"
+          echo "sha256=$SHA"   >> "$GITHUB_OUTPUT"
+          echo "parts=$N"      >> "$GITHUB_OUTPUT"
+          if [ "$N" -gt 20 ]; then
+            echo "::error::$N parts exceeds the 20-part cap; raise CHUNK_MB"; exit 1
+          fi
+
+      # Tiny. Download this first to learn part count, sizes and hashes.
+      - name: Upload manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-manifest
+          path: out/MANIFEST.txt
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Upload parts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-all-parts
+          path: out/bundle.tar.zst.part*
+          retention-days: 90
+          if-no-files-found: error
+
+  # Re-publishes each part as its own artifact so a size-limited client can pull
+  # them one at a time. Downloading the part set per leg is free on a public repo.
+  split:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundle-all-parts
+          path: parts
+
+      - name: Select this part
+        id: sel
+        run: |
+          P=$(printf 'parts/bundle.tar.zst.part%02d' "${{ matrix.index }}")
+          if [ -f "$P" ]; then
+            mkdir -p one && cp "$P" one/
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "selected $P ($(stat -c%s "$P") bytes)"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "no part ${{ matrix.index }}; bundle has fewer parts"
+          fi
+
+      - name: Upload single part
+        if: steps.sel.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-part-${{ matrix.index }}
+          path: one/
+          retention-days: 90
+          if-no-files-found: error
