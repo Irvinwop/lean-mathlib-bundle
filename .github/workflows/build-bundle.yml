@@ -9,63 +9,112 @@ name: Build Lean + Mathlib bundle
 # content is involved - the only inputs are lean-toolchain and lake-manifest.json,
 # which contain nothing but upstream revision pins.
 #
-# The bundle is emitted BOTH as one full artifact and as ~100 MB parts, because
-# the consuming connector may not manage a single multi-hundred-MB download.
-# Part count is capped at 20 so artifact enumeration stays on its first page.
+# CACHING. The bundle is a pure function of those two pins, and they change
+# rarely. It is therefore built once and stored in a permanent Release tagged
+# with the pins; later runs skip the ~9 minute build entirely and re-publish the
+# release assets as fresh artifacts. That is all the monthly refresh needs to do,
+# because artifacts expire after 90 days while releases never do.
+#
+# The pull_request trigger is load-bearing, not decorative. The consuming ChatGPT
+# connector can retrieve workflow runs only by commit SHA, and only for
+# pull_request-triggered runs, so a dispatch-triggered run is invisible to it. A
+# permanently open draft PR from the `snapshot` branch means every refresh lands
+# as a discoverable pull_request run. refresh.yml bumps that branch monthly.
+#
+# Parts are capped at 20 so artifact enumeration stays on its first page.
 
-# The pull_request trigger is load-bearing, not decorative. The consuming
-# ChatGPT connector can retrieve workflow runs only by commit SHA, and only for
-# pull_request-triggered runs, so a dispatch- or cron-triggered run is invisible
-# to it. A permanently open draft PR from the `snapshot` branch means every
-# rebuild lands as a discoverable pull_request run. refresh.yml bumps that branch
-# monthly; see README.
 on:
   workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: "Rebuild even if a release for these pins already exists"
+        type: boolean
+        default: false
   pull_request:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 env:
-  # ~3.0 GB compressed. 200 MB chunks keep the part count near 16, under
-  # the 20-part cap that keeps artifact enumeration on its first page.
   CHUNK_MB: 200
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 180
-    outputs:
-      bundle_bytes: ${{ steps.pack.outputs.bytes }}
-      bundle_sha256: ${{ steps.pack.outputs.sha256 }}
-      parts: ${{ steps.pack.outputs.parts }}
     steps:
       - uses: actions/checkout@v4
 
-      # Hosted runners have ~14 GB free; the toolchain plus oleans plus the
-      # stream can crowd that, so reclaim the preinstalled images we do not use.
-      - name: Reclaim disk
+      # The release tag is the cache key: toolchain plus mathlib revision.
+      # Different pins produce a different tag and therefore a fresh build.
+      - name: Compute pin key
+        id: key
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          df -h / | tail -1
+          TC=$(tr '/:' '--' < lean-toolchain)
+          MR=$(python3 -c "import json;print([p['rev'] for p in json.load(open('lake-manifest.json'))['packages'] if p['name']=='mathlib'][0])")
+          TAG="bundle-${TC}-mathlib-${MR:0:12}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "mathlib_rev=$MR" >> "$GITHUB_OUTPUT"
+          echo "  tag: $TAG"
+          if [ "${{ inputs.force_rebuild }}" = "true" ]; then
+            echo "cached=false" >> "$GITHUB_OUTPUT"; echo "  force_rebuild requested"
+          elif gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "cached=true"  >> "$GITHUB_OUTPUT"; echo "  release exists - skipping the build"
+          else
+            echo "cached=false" >> "$GITHUB_OUTPUT"; echo "  no release for these pins - building"
+          fi
+
+      # ---------------- cache hit: no Lean install at all ----------------
+      - name: Restore parts from the release
+        if: steps.key.outputs.cached == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p out
+          gh release download "${{ steps.key.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --dir out
+          echo "restored $(ls out/bundle.tar.zst.part* | wc -l) part(s) from ${{ steps.key.outputs.tag }}"
+
+      - name: Verify restored parts against their manifest
+        if: steps.key.outputs.cached == 'true'
+        run: |
+          cd out
+          fail=0
+          while read -r name bytes sha; do
+            case "$name" in bundle.tar.zst.part*) ;; *) continue ;; esac
+            got_b=$(stat -c%s "$name"); got_s=$(sha256sum "$name" | cut -d' ' -f1)
+            if [ "$got_b" != "$bytes" ] || [ "$got_s" != "$sha" ]; then
+              echo "  CORRUPT $name"; fail=1
+            fi
+          done < MANIFEST.txt
+          [ "$fail" -eq 0 ] && echo "  all restored parts match MANIFEST.txt" || exit 1
+
+      # ---------------- cache miss: full build ----------------
+      - name: Reclaim disk
+        if: steps.key.outputs.cached == 'false'
+        run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
                       /usr/local/share/boost "$AGENT_TOOLSDIRECTORY" 2>/dev/null || true
           df -h / | tail -1
 
       - name: Install elan and the pinned toolchain
+        if: steps.key.outputs.cached == 'false'
         run: |
           curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o elan-init.sh
           sh elan-init.sh -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       - name: Resolve dependencies and fetch Mathlib oleans
+        if: steps.key.outputs.cached == 'false'
         run: |
           elan toolchain install "$(cat lean-toolchain)"
           lake exe cache get 2>&1 | tail -5
-          echo "--- sizes ---"
           du -sh "$HOME/.elan" .lake
 
       - name: Verify the bundle actually typechecks Mathlib
+        if: steps.key.outputs.cached == 'false'
         run: |
           cat > /tmp/Probe.lean <<'LEAN'
           import Mathlib
@@ -74,22 +123,22 @@ jobs:
           lake env lean /tmp/Probe.lean && echo "PROBE OK: Mathlib imports and elaborates"
 
       - name: Pack
-        id: pack
+        if: steps.key.outputs.cached == 'false'
         run: |
           mkdir -p out
-          # Stream straight into split: no intermediate tarball, saving ~1.2 GB.
+          # Stream straight into split: no intermediate tarball.
           tar -C "$HOME" -cf - .elan \
               -C "$GITHUB_WORKSPACE" .lake lean-toolchain lakefile.toml lake-manifest.json \
             | zstd -3 -T0 \
             | split -b "${CHUNK_MB}m" -d -a 2 - out/bundle.tar.zst.part
-          cat out/bundle.tar.zst.part* > out/bundle.tar.zst.check 2>/dev/null || true
-          BYTES=$(stat -c%s out/bundle.tar.zst.check)
-          SHA=$(sha256sum out/bundle.tar.zst.check | cut -d' ' -f1)
-          rm -f out/bundle.tar.zst.check
+          cat out/bundle.tar.zst.part* > out/whole.check
+          BYTES=$(stat -c%s out/whole.check); SHA=$(sha256sum out/whole.check | cut -d' ' -f1)
+          rm -f out/whole.check
           N=$(ls out/bundle.tar.zst.part* | wc -l)
           {
             echo "toolchain: $(cat lean-toolchain)"
-            echo "mathlib_rev: $(python3 -c "import json;print([p['rev'] for p in json.load(open('lake-manifest.json'))['packages'] if p['name']=='mathlib'][0])")"
+            echo "mathlib_rev: ${{ steps.key.outputs.mathlib_rev }}"
+            echo "release_tag: ${{ steps.key.outputs.tag }}"
             echo "bundle_bytes: $BYTES"
             echo "bundle_sha256: $SHA"
             echo "parts: $N"
@@ -101,16 +150,32 @@ jobs:
               echo "$(basename "$f")  $(stat -c%s "$f")  $(sha256sum "$f" | cut -d' ' -f1)"
             done
           } > out/MANIFEST.txt
-          cp reassemble.sh out/ 2>/dev/null || true
           cat out/MANIFEST.txt
-          echo "bytes=$BYTES"  >> "$GITHUB_OUTPUT"
-          echo "sha256=$SHA"   >> "$GITHUB_OUTPUT"
-          echo "parts=$N"      >> "$GITHUB_OUTPUT"
           if [ "$N" -gt 20 ]; then
             echo "::error::$N parts exceeds the 20-part cap; raise CHUNK_MB"; exit 1
           fi
 
-      # Tiny. Download this first to learn part count, sizes and hashes.
+      # Permanent store: releases never expire, so these pins never need building
+      # again. This is the cache that makes every later run cheap.
+      - name: Publish the permanent release
+        if: steps.key.outputs.cached == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.key.outputs.tag }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Lean $(cat lean-toolchain) + Mathlib ${{ steps.key.outputs.mathlib_rev }}" \
+            --notes "Prebuilt Lean toolchain and Mathlib oleans for these exact pins.
+
+          Assets are a zstd-compressed tar split into ${CHUNK_MB} MB parts. See
+          MANIFEST.txt for per-part and whole-bundle SHA-256, and reassemble.sh in the
+          repository root.
+
+          Built and verified by run ${GITHUB_RUN_ID}; the build fails unless
+          'import Mathlib' elaborates first." \
+            out/MANIFEST.txt out/bundle.tar.zst.part*
+
+      # ---------------- both paths converge ----------------
       - name: Upload manifest
         uses: actions/upload-artifact@v4
         with:
@@ -124,14 +189,13 @@ jobs:
         with:
           name: bundle-all-parts
           path: out/bundle.tar.zst.part*
-          # Short retention: this exists only to hand the parts to the split job.
-          # The per-part artifacts below are the ones meant to be consumed, and
-          # keeping both for 90 days would store the whole 3 GB payload twice.
+          # Hand-off to the split job only. The per-part artifacts below are what
+          # gets consumed; keeping both would store the 3 GB payload twice.
           retention-days: 1
           if-no-files-found: error
 
   # Re-publishes each part as its own artifact so a size-limited client can pull
-  # them one at a time. Downloading the part set per leg is free on a public repo.
+  # them one at a time. Free on a public repo.
   split:
     needs: build
     runs-on: ubuntu-latest
@@ -152,10 +216,8 @@ jobs:
           if [ -f "$P" ]; then
             mkdir -p one && cp "$P" one/
             echo "present=true" >> "$GITHUB_OUTPUT"
-            echo "selected $P ($(stat -c%s "$P") bytes)"
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "no part ${{ matrix.index }}; bundle has fewer parts"
           fi
 
       - name: Upload single part
