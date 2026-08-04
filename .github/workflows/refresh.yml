@@ -1,0 +1,30 @@
+name: Refresh bundle monthly
+
+# Artifacts expire after 90 days. This bumps the `snapshot` branch once a month,
+# which updates the permanently open draft PR and therefore fires build-bundle.yml
+# as a pull_request run - the only kind the consuming connector can discover.
+
+on:
+  schedule:
+    - cron: "0 5 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: snapshot
+          fetch-depth: 0
+      - name: Bump the refresh marker
+        run: |
+          date -u +%Y-%m-%dT%H:%M:%SZ > REFRESH
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add REFRESH
+          git commit -m "Refresh bundle $(date -u +%Y-%m)" || { echo "nothing to commit"; exit 0; }
+          git push origin snapshot

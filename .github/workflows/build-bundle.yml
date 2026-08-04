@@ -13,11 +13,16 @@ name: Build Lean + Mathlib bundle
 # the consuming connector may not manage a single multi-hundred-MB download.
 # Part count is capped at 20 so artifact enumeration stays on its first page.
 
+# The pull_request trigger is load-bearing, not decorative. The consuming
+# ChatGPT connector can retrieve workflow runs only by commit SHA, and only for
+# pull_request-triggered runs, so a dispatch- or cron-triggered run is invisible
+# to it. A permanently open draft PR from the `snapshot` branch means every
+# rebuild lands as a discoverable pull_request run. refresh.yml bumps that branch
+# monthly; see README.
 on:
   workflow_dispatch:
-  schedule:
-    # Monthly. Artifacts expire after 90 days; this keeps a fresh set available.
-    - cron: "0 5 1 * *"
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
