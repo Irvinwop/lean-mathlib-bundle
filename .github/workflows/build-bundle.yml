@@ -23,7 +23,9 @@ permissions:
   contents: read
 
 env:
-  CHUNK_MB: 100
+  # ~3.0 GB compressed. 200 MB chunks keep the part count near 16, under
+  # the 20-part cap that keeps artifact enumeration on its first page.
+  CHUNK_MB: 200
 
 jobs:
   build:
@@ -117,7 +119,10 @@ jobs:
         with:
           name: bundle-all-parts
           path: out/bundle.tar.zst.part*
-          retention-days: 90
+          # Short retention: this exists only to hand the parts to the split job.
+          # The per-part artifacts below are the ones meant to be consumed, and
+          # keeping both for 90 days would store the whole 3 GB payload twice.
+          retention-days: 1
           if-no-files-found: error
 
   # Re-publishes each part as its own artifact so a size-limited client can pull
