@@ -21,7 +21,12 @@ name: Build Lean + Mathlib bundle
 # permanently open draft PR from the `snapshot` branch means every refresh lands
 # as a discoverable pull_request run. refresh.yml bumps that branch monthly.
 #
-# Parts are capped at 20 so artifact enumeration stays on its first page.
+# Two delivery shapes are published every run, because the consuming client's
+# maximum single download is not known:
+#   bundle-full            one ~3 GB artifact, simplest if the client can take it
+#   bundle-part-0..N       ~200 MB each, for a client that cannot
+# The bytes are identical and MANIFEST.txt covers both. Parts are capped at 20 so
+# artifact enumeration stays on its first page.
 
 on:
   workflow_dispatch:
@@ -176,6 +181,34 @@ jobs:
             out/MANIFEST.txt out/bundle.tar.zst.part*
 
       # ---------------- both paths converge ----------------
+
+      # A single whole-bundle file, for clients that can take one large download.
+      # The split parts stay published for clients that cannot; whichever path the
+      # consumer can manage, the bytes are identical and MANIFEST.txt covers both.
+      - name: Assemble the whole bundle
+        run: |
+          df -h / | tail -1
+          cat out/bundle.tar.zst.part* > out/bundle.tar.zst
+          WANT=$(awk -F": " '/^bundle_sha256/{print $2}' out/MANIFEST.txt)
+          GOT=$(sha256sum out/bundle.tar.zst | cut -d' ' -f1)
+          echo "  assembled $(stat -c%s out/bundle.tar.zst) bytes"
+          echo "  sha256 want: $WANT"
+          echo "  sha256 got : $GOT"
+          [ "$WANT" = "$GOT" ] || { echo "::error::whole-bundle sha256 mismatch"; exit 1; }
+          echo "  whole-bundle hash verified against MANIFEST.txt"
+
+      - name: Upload whole bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-full
+          path: |
+            out/bundle.tar.zst
+            out/MANIFEST.txt
+          retention-days: 90
+          # Already zstd-compressed; re-zipping it wastes minutes for nothing.
+          compression-level: 0
+          if-no-files-found: error
+
       - name: Upload manifest
         uses: actions/upload-artifact@v4
         with:

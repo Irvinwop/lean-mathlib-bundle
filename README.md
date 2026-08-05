@@ -38,15 +38,34 @@ re-run the workflow.
 1. Run the **Build Lean + Mathlib bundle** workflow (or take the newest scheduled run).
 2. Download `bundle-manifest` first — it lists the part count, byte sizes and SHA-256
    of every part and of the whole.
-3. Download either `bundle-all-parts` (one artifact) or the individual
-   `bundle-part-0` … `bundle-part-N` artifacts, whichever your client can handle.
-4. Put every `bundle.tar.zst.partNN` in one directory alongside `MANIFEST.txt`, then:
+3. Take **either** delivery shape — the bytes are identical:
 
-```sh
-bash reassemble.sh ~/lean-bundle
-export PATH="$HOME/lean-bundle/.elan/bin:$PATH"
-lean --version
-```
+   - **`bundle-full`** — one artifact holding the whole `bundle.tar.zst` (~3 GB)
+     plus `MANIFEST.txt`. Simplest, if your client can manage a download that size.
+   - **`bundle-part-0` … `bundle-part-N`** — ~200 MB each, for a client that cannot.
+
+4. Then extract.
+
+   From `bundle-full`, no reassembly is needed:
+
+   ```sh
+   sha256sum -c <(awk -F': ' '/^bundle_sha256/{print $2"  bundle.tar.zst"}' MANIFEST.txt)
+   mkdir -p ~/lean-bundle && zstd -d -c bundle.tar.zst | tar -x -C ~/lean-bundle
+   ```
+
+   From the parts, put every `bundle.tar.zst.partNN` in one directory alongside
+   `MANIFEST.txt` and run the helper, which verifies each part and the whole:
+
+   ```sh
+   bash reassemble.sh ~/lean-bundle
+   ```
+
+   Either way:
+
+   ```sh
+   export PATH="$HOME/lean-bundle/.elan/bin:$PATH"
+   lean --version
+   ```
 
 The extracted `.lake` directory holds the prebuilt Mathlib packages; point your Lean
 project at it (copy or symlink) so `lake` resolves without a network fetch.
