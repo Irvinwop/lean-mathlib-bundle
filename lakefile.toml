@@ -1,0 +1,12 @@
+# Mirrors the Lean project this bundle is built for. The pinned revisions live in
+# lake-manifest.json, which is copied verbatim from the consuming repository so
+# `lake exe cache get` resolves to byte-identical oleans.
+name = "bundle"
+version = "0.1.0"
+reservoir = false
+defaultTargets = []
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.1"
