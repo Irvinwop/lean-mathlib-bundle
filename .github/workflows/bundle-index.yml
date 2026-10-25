@@ -1,0 +1,112 @@
+name: Bundle validation
+on:
+  push:
+    branches: [maintenance/bundle-index]
+    paths: [.relay/request.age, .relay/request.id]
+permissions:
+  contents: read
+concurrency:
+  group: bundle-validation
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      request_id: ${{ steps.id.outputs.request_id }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - id: id
+        shell: bash
+        run: |
+          id=$(cat .relay/request.id)
+          [[ "$id" =~ ^[0-9a-f]{32}$ ]] || exit 1
+          printf 'request_id=%s\n' "$id" >> "$GITHUB_OUTPUT"
+      - name: Prepare bundle
+        shell: bash
+        env:
+          BUNDLE_SOURCE_KEY: ${{ secrets.BUNDLE_SOURCE_SSH_KEY }}
+          BUNDLE_SOURCE_URL: ${{ secrets.BUNDLE_SOURCE_URL }}
+          BUNDLE_INPUT_IDENTITY: ${{ secrets.BUNDLE_INPUT_AGE_KEY }}
+          BUNDLE_INPUT_RECIPIENT: ${{ vars.BUNDLE_INPUT_RECIPIENT }}
+          BUNDLE_RESULT_RECIPIENT: ${{ secrets.BUNDLE_OUTPUT_RECIPIENT }}
+          BUNDLE_RUNTIME_URL: ${{ vars.BUNDLE_RUNTIME_URL }}
+          BUNDLE_RUNTIME_SHA256: ${{ vars.BUNDLE_RUNTIME_SHA256 }}
+          BUNDLE_RUNTIME_MANIFEST_SHA256: ${{ vars.BUNDLE_RUNTIME_MANIFEST_SHA256 }}
+          BUNDLE_GITHUB_KNOWN_HOSTS: ${{ vars.BUNDLE_GITHUB_KNOWN_HOSTS }}
+        run: bash .relay/hosted.sh prepare
+      - name: Store bundle
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bundle-input
+          path: .relay/out/input.age
+          if-no-files-found: error
+          retention-days: 3
+      - name: Store preparation receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bundle-preparation
+          path: .relay/out/preparation.*.age
+          if-no-files-found: error
+          retention-days: 3
+  check:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bundle-input
+          path: .relay/download
+      - name: Check bundle
+        shell: bash
+        env:
+          BUNDLE_INPUT_IDENTITY: ${{ secrets.BUNDLE_INPUT_AGE_KEY }}
+          BUNDLE_RESULT_RECIPIENT: ${{ secrets.BUNDLE_OUTPUT_RECIPIENT }}
+          BUNDLE_SHARD: ${{ matrix.shard }}
+        run: bash .relay/hosted.sh shard
+      - name: Store check receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bundle-check-${{ matrix.shard }}
+          path: .relay/out/*.age
+          if-no-files-found: error
+          retention-days: 3
+  publish:
+    if: always()
+    needs: [prepare, check]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bundle-preparation
+          path: .relay/releases
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: bundle-check-*
+          path: .relay/releases
+          merge-multiple: true
+      - name: Publish receipt
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .relay/hosted.sh publish
