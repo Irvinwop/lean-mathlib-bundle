@@ -72,7 +72,7 @@ if [[ "$mode" == prepare ]]; then
   pack .relay/work/input .relay/work/input.tar.zst
   age -r "$BUNDLE_INPUT_RECIPIENT" -o .relay/out/input.age .relay/work/input.tar.zst
   mkdir .relay/work/payload
-  cp .relay/work/input/payload/SUMMARY.json .relay/work/payload/SUMMARY.json
+  cp -a .relay/work/input/payload/. .relay/work/payload/
   rm -f .relay/work/*.key
 elif [[ "$mode" == shard ]]; then
   [[ "$BUNDLE_SHARD" =~ ^[0-7]$ ]]
