@@ -1,5 +1,5 @@
 name: Automated checks
-run-name: Round2 build and isolated transport round2-build 20261111T081903Z-687d638c341f
+run-name: Round2 build and native Windows launch round2-build 20261111T084316Z-9759de250256
 on:
   push:
     branches: [automation]
@@ -10,6 +10,8 @@ jobs:
   checks:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
+    outputs:
+      round2_input_sha256: ${{ steps.round2_input.outputs.sha256 }}
     timeout-minutes: ${{ matrix.timeout }}
     strategy:
       fail-fast: false
@@ -17,10 +19,10 @@ jobs:
         include: [{"bundle_scope":"","stock_bootstrap":false,"windows_parent_cache":"","lane":"round2","target":"round2-build","name":"Round2 compile, parser and transport (no hardening E2E)","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":60}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '9ee4ccaef8a678dabb116837d093c826b865ec4e'
+      SOURCE_COMMIT: 'f598803931eaa689fb8869bf971b0a87b9dc10af'
       TARGET: '${{ matrix.target }}'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      FIXTURE_CERT_BASE64: ''
+      FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       CYPAT_PRIVATE_ROOT: /tmp/cypat-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.lane }}
     steps:
       - name: Download private input
@@ -72,7 +74,7 @@ jobs:
           fi
           unset FIXTURE_INPUT_KEY
           trap 'rm -f "$private/fixture-input.pem"' EXIT
-          if [[ $CYPAT_WINDOWS_PARENT_CACHE_MODE == export ]]; then
+          if [[ $CYPAT_WINDOWS_PARENT_CACHE_MODE == export || $TARGET == round2-build ]]; then
             printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d > "$private/fixtures.crt"
             export CYPAT_FIXTURE_CERTIFICATE="$private/fixtures.crt"
           fi
@@ -84,6 +86,24 @@ jobs:
             printf '%s\n' 'CYPAT_WINDOWS_PARENT_READY=1' >> "$GITHUB_ENV"
           fi
           exit "$code"
+      - name: Pin encrypted Round2 Windows input
+        if: always() && matrix.target == 'round2-build'
+        id: round2_input
+        shell: bash
+        run: |
+          set +x
+          read -r pin _ < <(sha256sum -- "$CYPAT_PRIVATE_ROOT/report.round2-input/payload.cms")
+          [[ $pin =~ ^[a-f0-9]{64}$ ]]
+          printf 'sha256=%s\n' "$pin" >> "$GITHUB_OUTPUT"
+      - name: Upload encrypted Round2 Windows input
+        if: always() && matrix.target == 'round2-build' && steps.round2_input.outputs.sha256 != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-round2-windows-input-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.round2-input/payload.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
       - name: Upload encrypted Windows parent chunks
         if: always() && env.CYPAT_WINDOWS_PARENT_READY == '1'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -126,4 +146,144 @@ jobs:
           private="$CYPAT_PRIVATE_ROOT"
           if [[ -d $private ]]; then chmod -R u+rwX -- "$private"; fi
           rm -rf -- "$private" "$RUNNER_TEMP/result.cms" "$RUNNER_TEMP/report-sealing.log"
+  round2_windows:
+    name: Round2 delivered Windows launch smoke (no hardening E2E)
+    needs: checks
+    if: always() && needs.checks.outputs.round2_input_sha256 != ''
+    runs-on: windows-2022
+    timeout-minutes: 20
+    environment: private-fixtures
+    env:
+      SOURCE_COMMIT: 'f598803931eaa689fb8869bf971b0a87b9dc10af'
+      QUEUED_SOURCE_SHA256: 'c6085a420a09a4ab32e63c76fd4f8266d24cba0c869a469dd3efd70c928e3e89'
+      REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
+      INPUT_SHA256: ${{ needs.checks.outputs.round2_input_sha256 }}
+    steps:
+      - name: Obtain pinned private Round2 smoke source
+        env:
+          SOURCE_KEY: ${{ secrets.FIXTURE_SOURCE_KEY }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if ($env:GITHUB_RUN_ID -cnotmatch '\A[1-9][0-9]*\z' -or $env:GITHUB_RUN_ATTEMPT -cnotmatch '\A[1-9][0-9]*\z') { throw 'Require an exact hosted run attempt' }
+          $private=Join-Path $env:RUNNER_TEMP ('r2-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          if ([IO.Directory]::Exists($private) -or [IO.File]::Exists($private)) { throw 'Preserve an existing private job root' }
+          $sid=[Security.Principal.WindowsIdentity]::GetCurrent().User
+          $acl=[Security.AccessControl.DirectorySecurity]::new()
+          $acl.SetOwner($sid);$acl.SetAccessRuleProtection($true,$false)
+          foreach($id in @($sid.Value,'S-1-5-18','S-1-5-32-544')) {
+            $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($id),'FullControl','ContainerInherit,ObjectInherit','None','Allow'))
+          }
+          $null=[IO.FileSystemAclExtensions]::Create([IO.DirectoryInfo]::new($private),$acl)
+          [IO.File]::AppendAllText($env:GITHUB_ENV,('CYPAT_PRIVATE_ROOT='+$private+"`n"),[Text.UTF8Encoding]::new($false))
+          New-Item -ItemType Directory -Path "$private/source","$private/report" | Out-Null
+          $initial=@{protocol='nyascripts-round2-windows-smoke-v1';status='incomplete';source_sha256=$env:QUEUED_SOURCE_SHA256
+            origin=@{source_commit=$env:SOURCE_COMMIT;public_commit=$env:GITHUB_SHA;action_id=$env:GITHUB_RUN_ID;run_attempt=$env:GITHUB_RUN_ATTEMPT}
+            runner='windows-2022';job='round2_windows';native_hardening_verified=$false;host_hardening_executed=$false
+            e2e_validation='not-performed';windows11_validation='profile-mismatch-only';cases=@()}
+          [IO.File]::WriteAllText("$private/report/receipt.json",($initial|ConvertTo-Json -Depth 8))
+          [IO.File]::WriteAllText("$private/report/exit-code",'2')
+          try {
+            & {
+              $key=($env:SOURCE_KEY -replace "`r`n","`n").TrimEnd([char[]]"`r`n")+"`n"
+              [IO.File]::WriteAllText("$private/key",$key,[Text.UTF8Encoding]::new($false))
+              Remove-Item Env:SOURCE_KEY;$key=$null
+              $keyAcl=[Security.AccessControl.FileSecurity]::new();$keyAcl.SetOwner($sid);$keyAcl.SetAccessRuleProtection($true,$false)
+              $keyAcl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($sid,'FullControl','Allow'))
+              Set-Acl -LiteralPath "$private/key" -AclObject $keyAcl
+              [IO.File]::WriteAllText("$private/known_hosts","github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl`n")
+              $sshRoot=$private.Replace('\','/')
+              $env:GIT_SSH_COMMAND='"C:/Windows/System32/OpenSSH/ssh.exe" -F none -i "'+$sshRoot+'/key" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile="'+$sshRoot+'/known_hosts"'
+              $env:GIT_SSH_VARIANT='ssh';$env:GIT_CONFIG_NOSYSTEM='1';$env:GIT_CONFIG_GLOBAL='NUL';$env:GIT_TERMINAL_PROMPT='0'
+              & git -C "$private/source" init -q
+              if($LASTEXITCODE){throw 'Private initialization failed'}
+              & git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git $env:SOURCE_COMMIT
+              if($LASTEXITCODE){throw 'Private fetch failed'}
+              & git -C "$private/source" -c core.hooksPath=NUL -c core.autocrlf=false -c core.eol=lf checkout -q --detach FETCH_HEAD
+              if($LASTEXITCODE){throw 'Private checkout failed'}
+              $commit=& git -C "$private/source" rev-parse HEAD
+              if($LASTEXITCODE -or $commit -cne $env:SOURCE_COMMIT){throw 'Private commit differs'}
+              foreach($line in [IO.File]::ReadAllLines("$private/source/CI-SOURCE.SHA256SUMS")) {
+                if($line -cnotmatch '^([a-f0-9]{64})  ([A-Za-z0-9_./+@-]+)$'){throw 'Invalid source manifest'}
+                $pin=$Matches[1];$name=$Matches[2]
+                if($name.StartsWith('/') -or @($name.Split('/')|Where-Object {$_ -in @('','.','..')}).Count){throw 'Unsafe source row'}
+                foreach($part in $name.Split('/')) {
+                  $folded=$part.ToLowerInvariant() -replace '[^a-z0-9]',''
+                  if($folded -match 'donotread|cyberpatriot|aeacus|scorer|scoring|confidential|abliteration' -or $folded -in @('ccs','official','private')){throw 'Excluded source row before access'}
+                }
+                $cursor=Join-Path "$private/source" $name
+                while($cursor){
+                  if([IO.File]::GetAttributes($cursor) -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device)){throw 'Linked/device source refused'}
+                  $parent=[IO.Directory]::GetParent($cursor);$cursor=if($parent){$parent.FullName}else{$null}
+                }
+                if((Get-FileHash -LiteralPath "$private/source/$name" -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pin){throw 'Private source bytes differ'}
+              }
+              [IO.File]::WriteAllText("$private/source-admitted",$env:SOURCE_COMMIT)
+            } *> "$private/report/source-bootstrap.log"
+          } catch { $_ | Out-File -LiteralPath "$private/report/source-bootstrap.log" -Append; exit 2 }
+          finally { Remove-Item -LiteralPath "$private/key" -Force -ErrorAction SilentlyContinue }
+      - name: Download encrypted Round2 Windows executables
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: encrypted-round2-windows-input-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/transport
+      - name: Authenticate source-bound Windows input
+        env:
+          FIXTURE_INPUT_KEY: ${{ secrets.FIXTURE_INPUT_KEY }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          try {
+            & {
+              [IO.File]::WriteAllText("$private/fixture-input.pem",($env:FIXTURE_INPUT_KEY -replace "`r`n","`n").TrimEnd([char[]]"`r`n")+"`n",[Text.UTF8Encoding]::new($false))
+              Remove-Item Env:FIXTURE_INPUT_KEY
+              & python -I -B "$private/source/tools/round2/hosted_check.py" --open-windows-input --input "$private/transport/payload.cms" --ciphertext-sha256 $env:INPUT_SHA256 --key "$private/fixture-input.pem" --output "$private/input" --openssl 'C:\Program Files\Git\usr\bin\openssl.exe'
+              if($LASTEXITCODE){throw 'Encrypted native input admission failed'}
+            } *> "$private/report/input-open.log"
+          } catch { $_ | Out-File -LiteralPath "$private/report/input-open.log" -Append; exit 2 }
+          finally { Remove-Item -LiteralPath "$private/fixture-input.pem" -Force -ErrorAction SilentlyContinue }
+      - name: Launch delivered help and bounded inspect without a new console
+        shell: pwsh
+        run: |
+          $private=$env:CYPAT_PRIVATE_ROOT
+          try {
+            & "$private/source/tools/round2/windows-smoke.ps1" -PrivateRoot $private *> "$private/report/stage.log"
+            exit ([int][IO.File]::ReadAllText("$private/report/exit-code"))
+          } catch { $_ | Out-File -LiteralPath "$private/report/stage-error.log"; exit 2 }
+      - name: Seal native launch streams and failures privately
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          try {
+            & {
+              [IO.File]::WriteAllBytes("$private/report.crt",[Convert]::FromBase64String($env:REPORT_CERT_BASE64))
+              $sealed=$false
+              if([IO.File]::Exists("$private/source-admitted")) {
+                & python -I -B "$private/source/tools/ci/windows_preflight.py" seal-directory --directory "$private/report" --output "$private/sealed" --certificate "$private/report.crt" --openssl 'C:\Program Files\Git\usr\bin\openssl.exe'
+                $sealed=$LASTEXITCODE -eq 0
+              }
+              if($sealed) {
+                [IO.File]::Move("$private/sealed/report.cms","$private/report.cms")
+              } else {
+                # Trusted installed OS/OpenSSL fallback also returns early
+                # checkout/import failures. It can never certify a native pass.
+                [IO.File]::WriteAllText("$private/report/sealing-failure.txt",'Complete native sealing failed; launch evidence is incomplete.')
+                [IO.Compression.ZipFile]::CreateFromDirectory("$private/report","$private/failure.zip")
+                & 'C:\Program Files\Git\usr\bin\openssl.exe' cms -encrypt -binary -aes-256-gcm -outform DER -in "$private/failure.zip" -out "$private/report.cms.partial" "$private/report.crt"
+                if($LASTEXITCODE){throw 'Failure report encryption failed'}
+                [IO.File]::Move("$private/report.cms.partial","$private/report.cms")
+                exit 2
+              }
+            } *> "$private/sealing.log"
+          } catch { $_ | Out-File -LiteralPath "$private/sealing.log" -Append; exit 2 }
+      - name: Upload encrypted Round2 native launch report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-round2-windows-smoke-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
 
