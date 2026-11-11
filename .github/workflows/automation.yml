@@ -1,5 +1,5 @@
 name: Automated checks
-run-name: Round2 fresh authenticated Windows11 test inputs round2-windows11-parent 20261111T134024Z-b88417b2b429
+run-name: Round2 fresh authenticated Windows11 test inputs round2-windows11-app-kit 20261111T134139Z-4ade8774b579
 on:
   push:
     branches: [automation]
@@ -7,161 +7,239 @@ on:
 permissions:
   contents: read
 jobs:
-  round2_windows11_parent:
-    name: Round2 fresh reviewed stock Windows11 parent preparation
-    runs-on: ubuntu-24.04
-    timeout-minutes: 360
+  round2_app_kit:
+    name: Round2 native Server2022 reusable application kit preparation
+    # Standalone producer: no product build, guest, CORE or competition image.
+    # Root must select this target and supply this exact explicit opt-in value.
+    if: ${{ 'github-hosted-app-kit-only' == 'github-hosted-app-kit-only' }}
+    runs-on: windows-2022
+    timeout-minutes: 160
     environment: private-fixtures
-    permissions:
-      contents: read
+    outputs:
+      app_kit_source_sha256: ${{ steps.produce.outputs.source_sha256 }}
+      app_kit_manifest_sha256: ${{ steps.produce.outputs.manifest_sha256 }}
+      app_kit_preparation_sha256: ${{ steps.produce.outputs.preparation_sha256 }}
+      app_kit_cleanup_sha256: ${{ steps.produce.outputs.cleanup_sha256 }}
+      app_kit_ciphertext_sha256: ${{ steps.produce.outputs.ciphertext_sha256 }}
+      app_kit_ciphertext_bytes: ${{ steps.produce.outputs.ciphertext_bytes }}
+      app_kit_receipt_sha256: ${{ steps.produce.outputs.receipt_sha256 }}
     env:
-      SOURCE_COMMIT: 'cb344ce71c0cac2a3c1516fcdc81a436f21deeef'
-      QUEUED_SOURCE_SHA256: 'b7f921e8496dce6619332181f921e81e87668936220abe950609a88cab873d35'
+      SOURCE_COMMIT: '5e976f2778c44bfbe424f5f3fde0da47e75e43b0'
+      QUEUED_SOURCE_SHA256: '5c13c4981d03351faa0e14e4268bf40b5b71bdf6e01c195e33b1182c73d0df5a'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      WIN11_BOOTSTRAP_SHA256: '734a296071117ca046f21f5774ba42f8e56dee1aa19aabb4ad2dd909c5b1dc8b'
-      WIN11_JSON_HELPER_SHA256: '8c577d83802c752ff70b286a17558b9eb701b5a281c8880bc76d14e6e15d39d0'
-      WIN11_STOCK_SOURCE_SHA256: '376fd02ec9c9b2d47a3e51cc321f4511a8cbbb5a52561e8ca76e51ffccb913de'
-      CYPAT_PRIVATE_ROOT: /tmp/r2p-${{ github.run_id }}-${{ github.run_attempt }}
+      CYPAT_APP_KIT_OPT_IN: 'github-hosted-app-kit-only'
     steps:
-      - name: Obtain the exact private preparation source
+      - name: Admit explicit disposable native host and create private report
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$ProgressPreference='SilentlyContinue'
+          if($env:CYPAT_APP_KIT_OPT_IN -cne 'github-hosted-app-kit-only' -or
+             $env:GITHUB_ACTIONS -cne 'true' -or $env:RUNNER_ENVIRONMENT -cne 'github-hosted' -or
+             $env:RUNNER_OS -cne 'Windows' -or $env:RUNNER_ARCH -cne 'X64' -or $env:ImageOS -cne 'win22'){
+            throw 'Explicit disposable GitHub-hosted windows-2022 preparation required'
+          }
+          if($env:GITHUB_RUN_ID -cnotmatch '\A[1-9][0-9]*\z' -or $env:GITHUB_RUN_ATTEMPT -cnotmatch '\A[1-9][0-9]*\z' -or
+             $env:SOURCE_COMMIT -cnotmatch '\A[a-f0-9]{40}\z' -or $env:QUEUED_SOURCE_SHA256 -cnotmatch '\A[a-f0-9]{64}\z'){
+            throw 'Missing exact source/run identity'
+          }
+          $private=Join-Path $env:RUNNER_TEMP ('r2ak-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          if([IO.Directory]::Exists($private) -or [IO.File]::Exists($private)){throw 'Preserve an existing private job root'}
+          $sid=[Security.Principal.WindowsIdentity]::GetCurrent().User
+          $acl=[Security.AccessControl.DirectorySecurity]::new();$acl.SetOwner($sid);$acl.SetAccessRuleProtection($true,$false)
+          foreach($id in @($sid.Value,'S-1-5-18','S-1-5-32-544')){
+            $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($id),'FullControl','ContainerInherit,ObjectInherit','None','Allow'))
+          }
+          $null=[IO.FileSystemAclExtensions]::Create([IO.DirectoryInfo]::new($private),$acl)
+          [IO.File]::AppendAllText($env:GITHUB_ENV,('CYPAT_PRIVATE_ROOT='+$private+"`n"),[Text.UTF8Encoding]::new($false))
+          $null=New-Item -ItemType Directory -Path "$private/source","$private/report"
+          $initial=@{protocol='nyascripts-round2-win11-app-kit-ci-job-v1';status='blocked';phase='private source admission';runner='windows-2022'
+            source_sha256=$env:QUEUED_SOURCE_SHA256;native_core_verified=$false
+            origin=@{source_commit=$env:SOURCE_COMMIT;public_commit=$env:GITHUB_SHA;action_id=$env:GITHUB_RUN_ID;run_attempt=$env:GITHUB_RUN_ATTEMPT;job=$env:GITHUB_JOB}}
+          [IO.File]::WriteAllText("$private/report/app-kit-job.json",($initial|ConvertTo-Json -Depth 8))
+          [IO.File]::WriteAllText("$private/report/exit-code",'2')
+      - name: Obtain and admit the exact private source snapshot
         env:
           SOURCE_KEY: ${{ secrets.FIXTURE_SOURCE_KEY }}
-        shell: bash
+        shell: pwsh
         run: |
-          set +x
-          set -euo pipefail
-          umask 077
-          [[ $GITHUB_ACTIONS == true && $RUNNER_ENVIRONMENT == github-hosted &&
-             $RUNNER_OS == Linux && $RUNNER_ARCH == X64 && $ImageOS == ubuntu24 ]]
-          private="$CYPAT_PRIVATE_ROOT"
-          mkdir -m 700 -- "$private"
-          mkdir -m 700 -- "$private/source" "$private/report"
-          printf '77\n' > "$private/report/exit-code"
-          exec >"$private/report/source-bootstrap.log" 2>&1
-          printf '%s\n' "$SOURCE_KEY" > "$private/key"
-          unset SOURCE_KEY
-          trap 'rm -f -- "$private/key"' EXIT
-          printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > "$private/known_hosts"
-          export GIT_SSH_COMMAND="ssh -F /dev/null -i $private/key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile=$private/known_hosts"
-          export GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null GIT_TERMINAL_PROMPT=0
-          git -C "$private/source" init -q
-          git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git "$SOURCE_COMMIT"
-          git -C "$private/source" -c core.hooksPath=/dev/null -c core.autocrlf=false checkout -q --detach FETCH_HEAD
-          test "$(git -C "$private/source" rev-parse HEAD)" = "$SOURCE_COMMIT"
-          cd "$private/source"
-          while IFS= read -r -d '' row; do
-            mode=${row%% *}
-            path=${row#* }
-            [[ $mode =~ ^[0-7]{3,4}$ && -n $path && $path != /* && /$path/ != */../* && ! -L $path ]]
-            chmod "$mode" -- "$path"
-          done < CI-SOURCE.modes
-          sha256sum --check --strict --quiet CI-SOURCE.SHA256SUMS
-          test "$(cat CI-SOURCE.sha256)" = "$QUEUED_SOURCE_SHA256"
-          printf 'CYPAT_WIN11_PARENT_SOURCE_ADMITTED=1\n' >> "$GITHUB_ENV"
-      - name: Construct, stop, independently review and encrypt a fresh parent
-        timeout-minutes: 270
-        shell: bash
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          try {
+            & {
+              # Existing private source checkout and CI-SOURCE manifest lane.
+              $key=($env:SOURCE_KEY -replace "`r`n","`n").TrimEnd([char[]]"`r`n")+"`n"
+              [IO.File]::WriteAllText("$private/key",$key,[Text.UTF8Encoding]::new($false));Remove-Item Env:SOURCE_KEY;$key=$null
+              $sid=[Security.Principal.WindowsIdentity]::GetCurrent().User
+              $acl=[Security.AccessControl.FileSecurity]::new();$acl.SetOwner($sid);$acl.SetAccessRuleProtection($true,$false)
+              $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($sid,'FullControl','Allow'))
+              Set-Acl -LiteralPath "$private/key" -AclObject $acl
+              [IO.File]::WriteAllText("$private/known_hosts","github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl`n")
+              $sshRoot=$private.Replace('\','/')
+              $env:GIT_SSH_COMMAND='"C:/Windows/System32/OpenSSH/ssh.exe" -F none -i "'+$sshRoot+'/key" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile="'+$sshRoot+'/known_hosts"'
+              $env:GIT_SSH_VARIANT='ssh';$env:GIT_CONFIG_NOSYSTEM='1';$env:GIT_CONFIG_GLOBAL='NUL';$env:GIT_TERMINAL_PROMPT='0'
+              & git -C "$private/source" init -q
+              if($LASTEXITCODE){throw 'Private initialization failed'}
+              & git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git $env:SOURCE_COMMIT
+              if($LASTEXITCODE){throw 'Private source fetch failed'}
+              & git -C "$private/source" -c core.hooksPath=NUL -c core.autocrlf=false -c core.eol=lf checkout -q --detach FETCH_HEAD
+              if($LASTEXITCODE){throw 'Private checkout failed'}
+              $commit=& git -C "$private/source" rev-parse HEAD
+              if($LASTEXITCODE -or $commit -cne $env:SOURCE_COMMIT){throw 'Private commit differs'}
+              if([IO.File]::ReadAllText("$private/source/CI-SOURCE.sha256").Trim() -cne $env:QUEUED_SOURCE_SHA256){throw 'Queued source snapshot differs'}
+              $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+              foreach($line in [IO.File]::ReadAllLines("$private/source/CI-SOURCE.SHA256SUMS")){
+                if($line -cnotmatch '\A([a-f0-9]{64})  ([A-Za-z0-9_./+@-]+)\z'){throw 'Invalid source manifest'}
+                $pin=$Matches[1];$name=$Matches[2]
+                if($name.StartsWith('/') -or -not $seen.Add($name) -or @($name.Split('/')|Where-Object {$_ -in @('','.','..')}).Count){throw 'Unsafe or aliased source row'}
+                foreach($part in $name.Split('/')){
+                  $fold=$part.ToLowerInvariant() -replace '[^a-z0-9]',''
+                  if($fold -match 'donotread|cyberpatriot|aeacus|scorer|scoring|confidential|abliteration' -or $fold -in @('ccs','official','private','protected')){throw 'Excluded source row before access'}
+                }
+                $cursor=Join-Path "$private/source" $name
+                while($cursor){
+                  if([IO.File]::GetAttributes($cursor) -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device)){throw 'Linked or device source refused'}
+                  $parent=[IO.Directory]::GetParent($cursor);$cursor=if($parent){$parent.FullName}else{$null}
+                }
+                if((Get-FileHash -LiteralPath "$private/source/$name" -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pin){throw 'Private source bytes differ'}
+              }
+              [IO.File]::WriteAllText("$private/source-admitted",$env:SOURCE_COMMIT)
+            } *> "$private/report/source-bootstrap.log"
+          } catch { $_ | Out-File -LiteralPath "$private/report/source-bootstrap.log" -Append; exit 2 }
+          finally { Remove-Item -LiteralPath "$private/key" -Force -ErrorAction SilentlyContinue }
+      - name: Hosted source syntax and mutation opt-in refusal checks
+        shell: pwsh
         run: |
-          set +x
-          set -euo pipefail
-          umask 077
-          private="$CYPAT_PRIVATE_ROOT"
-          exec >"$private/report/preparation.log" 2>&1
-          printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d > "$private/fixtures.crt"
-          cd "$private/source"
-          code=0
-          RUNNER_TEMP="$private" /usr/bin/python3 -I -B tools/round2/windows11_parent_ci.py prepare \
-            --source-sha256 "$QUEUED_SOURCE_SHA256" \
-            --bootstrap-sha256 "$WIN11_BOOTSTRAP_SHA256" \
-            --json-helper-sha256 "$WIN11_JSON_HELPER_SHA256" \
-            --stock-source-sha256 "$WIN11_STOCK_SOURCE_SHA256" \
-            --certificate "$private/fixtures.crt" --output "$private/p" --report "$private/report" || code=$?
-          printf '%s\n' "$code" > "$private/report/exit-code"
-          if [[ $code == 0 ]]; then
-            printf 'CYPAT_WIN11_PARENT_PREPARED=1\n' >> "$GITHUB_ENV"
-          fi
-          exit "$code"
-      - name: Retain original evidence, vendor input and any failed stopped instance
-        if: always() && env.CYPAT_WIN11_PARENT_SOURCE_ADMITTED == '1'
-        timeout-minutes: 65
-        shell: bash
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          $PSNativeCommandUseErrorActionPreference=$false
+          try {
+            & {
+              & python -I -B -c 'import pathlib,sys; [compile(pathlib.Path(p).read_bytes(), p, "exec") for p in sys.argv[1:]]' "$private/source/tools/round2/windows11_app_kit_ci.py" "$private/source/tools/round2/windows11_app_kit.py"
+              if($LASTEXITCODE){throw 'Hosted Python syntax admission failed'}
+              foreach($file in @('windows11_app_kit_clean.ps1','windows11_app_kit.ps1')){
+                $tokens=$null;$errors=$null
+                $null=[Management.Automation.Language.Parser]::ParseFile("$private/source/tools/round2/$file",[ref]$tokens,[ref]$errors)
+                if($errors.Count){throw 'Hosted PowerShell syntax admission failed'}
+              }
+              # Use valid private native inspection inputs. If either guard is
+              # lost, Inspect can reach real native observation and emit a
+              # receipt, which fails this check; it never uninstalls anything.
+              $denied=Join-Path $private 'guard-state'
+              $null=New-Item -ItemType Directory -Path $denied,"$denied/evidence"
+              $desktop='C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'
+              & $desktop -NoLogo -NoProfile -NonInteractive -File "$private/source/tools/round2/windows11_app_kit_clean.ps1" -Mode Inspect -StateRoot $denied -SourceSHA256 $env:QUEUED_SOURCE_SHA256
+              if($LASTEXITCODE -eq 0 -or @([IO.Directory]::EnumerateFileSystemEntries("$denied/evidence")).Count){throw 'Native explicit switch guard failed'}
+              $optIn=$env:CYPAT_APP_KIT_OPT_IN
+              try {
+                Remove-Item Env:CYPAT_APP_KIT_OPT_IN
+                & $desktop -NoLogo -NoProfile -NonInteractive -File "$private/source/tools/round2/windows11_app_kit_clean.ps1" -Mode Inspect -EnableDisposableHostedPreparation -StateRoot $denied -SourceSHA256 $env:QUEUED_SOURCE_SHA256
+                if($LASTEXITCODE -eq 0 -or @([IO.Directory]::EnumerateFileSystemEntries("$denied/evidence")).Count){throw 'Native hosted opt-in value guard failed'}
+              } finally { $env:CYPAT_APP_KIT_OPT_IN=$optIn }
+            } *> "$private/report/source-checks.log"
+          } catch { $_ | Out-File -LiteralPath "$private/report/source-checks.log" -Append; exit 2 }
+          # The last child above is deliberately refused; do not propagate its
+          # expected nonzero status through Actions' shell epilogue.
+          exit 0
+      - name: Preserve originals uninstall native apps and produce encrypted reusable kit
+        id: produce
+        shell: pwsh
         run: |
-          set +x
-          set -euo pipefail
-          umask 077
-          private="$CYPAT_PRIVATE_ROOT"
-          exec >"$private/report/retention.log" 2>&1
-          printf '%s' "$REPORT_CERT_BASE64" | base64 -d > "$private/report.crt"
-          # This has a distinct retention protocol. It cannot admit a partial VM.
-          # A successful parent already has the normal encrypted fixture export.
-          code=0
-          RUNNER_TEMP="$private" /usr/bin/timeout --signal=TERM --kill-after=30s 3600 \
-            /usr/bin/python3 -I -B "$private/source/tools/round2/windows11_parent_ci.py" retain \
-            --work "$private/p" --output "$private/retained" --report "$private/report" \
-            --certificate "$private/report.crt" || code=$?
-          printf '%s\n' "$code" > "$private/report/retention-exit-code"
-          exit "$code"
-      - name: Upload encrypted reviewed parent
-        if: always() && env.CYPAT_WIN11_PARENT_PREPARED == '1'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: encrypted-round2-win11-parent-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/p/export/*.cms
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
-      - name: Upload existing-format encrypted recovery input
-        if: always() && env.CYPAT_WIN11_PARENT_PREPARED == '1'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: encrypted-round2-win11-parent-recovery-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/p/recovery/recovery.cms
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
-      - name: Upload encrypted original input and stopped-state retention
-        if: always() && env.CYPAT_WIN11_PARENT_SOURCE_ADMITTED == '1'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: encrypted-round2-win11-parent-retained-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/retained/*.cms
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
-      - name: Encrypt private receipts and early failures
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT;$code=2
+          try {
+            & {
+              [IO.File]::WriteAllBytes("$private/fixture-recipient.pem",[Convert]::FromBase64String($env:FIXTURE_CERT_BASE64))
+              & python -I -B "$private/source/tools/round2/windows11_app_kit_ci.py" prepare --enable-disposable-hosted-preparation --source-sha256 $env:QUEUED_SOURCE_SHA256 --work "$private/work" --certificate "$private/fixture-recipient.pem" --github-output $env:GITHUB_OUTPUT
+              $script:producerCode=$LASTEXITCODE
+            } *> "$private/report/producer-driver.log"
+            $code=$script:producerCode
+          } catch { $_ | Out-File -LiteralPath "$private/report/producer-driver.log" -Append; $code=2 }
+          finally {
+            try {
+              if([IO.Directory]::Exists("$private/work/report")){
+                $files=@([IO.Directory]::EnumerateFiles("$private/work/report"));$total=[long]0
+                if($files.Count -gt 64){throw 'Producer report member bound exceeded'}
+                foreach($file in $files){
+                  $item=[IO.FileInfo]::new($file);$total+=$item.Length
+                  if($item.Attributes -band [IO.FileAttributes]::ReparsePoint -or $item.Length -gt 8MB -or $total -gt 48MB){throw 'Producer report size or path bound exceeded'}
+                  [IO.File]::Copy($file,(Join-Path "$private/report" $item.Name),$false)
+                }
+              }
+              $job=Get-Content -LiteralPath "$private/report/app-kit-job.json" -Raw|ConvertFrom-Json
+              $job.phase='native preparation completed'
+              $job.status=if($code -eq 0){'prepared'}elseif($code -eq 77){'unavailable'}else{'failed'}
+              $job|ConvertTo-Json -Depth 8|Set-Content -LiteralPath "$private/report/app-kit-job.json"
+              [IO.File]::WriteAllText("$private/report/exit-code",[string]$code)
+            } catch { $_ | Out-File -LiteralPath "$private/report/report-copy-error.log"; $code=2 }
+          }
+          exit $code
+      - name: Seal bounded evidence including concrete preparation failures
         if: always()
-        timeout-minutes: 10
-        shell: bash
+        shell: pwsh
         run: |
-          set +x
-          set -euo pipefail
-          umask 077
-          private="$CYPAT_PRIVATE_ROOT"
-          exec >"$RUNNER_TEMP/r2p-report-sealing.log" 2>&1
-          printf '%s' "$REPORT_CERT_BASE64" | base64 -d > "$private/report.crt"
-          /usr/bin/timeout --signal=TERM --kill-after=30s 300 \
-            tar -C "$private" -I 'zstd -T2 -3' -cf "$private/result.tar.zst" report
-          [[ $(stat -c %s -- "$private/result.tar.zst") -le 268435456 ]]
-          /usr/bin/timeout --signal=TERM --kill-after=30s 120 openssl cms \
-            -encrypt -binary -aes-256-gcm -outform DER -in "$private/result.tar.zst" \
-            -out "$private/result.cms.partial" "$private/report.crt"
-          mv -- "$private/result.cms.partial" "$private/result.cms"
-      - name: Upload encrypted preparation receipts
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          try {
+            & {
+              [IO.File]::WriteAllBytes("$private/report-recipient.pem",[Convert]::FromBase64String($env:REPORT_CERT_BASE64))
+              if([IO.File]::Exists("$private/work/originals-envelope/payload.cms") -and [IO.File]::Exists("$private/work/originals-envelope/envelope.json")){
+                [IO.File]::AppendAllText($env:GITHUB_ENV,"CYPAT_APP_KIT_ORIGINALS_READY=1`n",[Text.UTF8Encoding]::new($false))
+              }
+              $sealed=$false
+              if([IO.File]::Exists("$private/source-admitted")){
+                & python -I -B "$private/source/tools/ci/windows_preflight.py" seal-directory --directory "$private/report" --output "$private/sealed" --certificate "$private/report-recipient.pem" --openssl 'C:\Program Files\Git\usr\bin\openssl.exe'
+                $sealed=$LASTEXITCODE -eq 0
+              }
+              if($sealed){[IO.File]::Move("$private/sealed/report.cms","$private/report.cms")}
+              else {
+                # Fixed small diagnostic selection even if source admission or
+                # normal sealing failed. Never zip source or an unchecked tree.
+                $null=[IO.Directory]::CreateDirectory("$private/fallback")
+                foreach($name in @('app-kit-job.json','app-kit-ci.json','exit-code','source-bootstrap.log','source-checks.log','producer-driver.log','report-copy-error.log')){
+                  $path=Join-Path "$private/report" $name
+                  if(-not [IO.File]::Exists($path)){continue}
+                  if([IO.File]::GetAttributes($path) -band [IO.FileAttributes]::ReparsePoint){throw 'Linked fallback evidence'}
+                  $s=[IO.File]::OpenRead($path)
+                  try{$b=[byte[]]::new(65536);$n=$s.Read($b,0,$b.Length);$out=[IO.File]::Create("$private/fallback/$name");try{$out.Write($b,0,$n)}finally{$out.Dispose()}}finally{$s.Dispose()}
+                }
+                [IO.File]::WriteAllText("$private/fallback/report-fallback.json",'{"status":"failed","normal_report_sealing":false,"diagnostics_may_be_truncated":true,"native_core_verified":false}')
+                Add-Type -AssemblyName System.IO.Compression.FileSystem
+                [IO.Compression.ZipFile]::CreateFromDirectory("$private/fallback","$private/fallback.zip",[IO.Compression.CompressionLevel]::NoCompression,$false)
+                & 'C:\Program Files\Git\usr\bin\openssl.exe' cms -encrypt -binary -aes-256-gcm -outform DER -in "$private/fallback.zip" -out "$private/report.cms.partial" "$private/report-recipient.pem"
+                if($LASTEXITCODE){throw 'Fallback report encryption failed'}
+                [IO.File]::Move("$private/report.cms.partial","$private/report.cms")
+                throw 'Normal report admission/sealing failed; encrypted fallback retained'
+              }
+            } *> "$private/report-sealing.log"
+          } catch { $_ | Out-File -LiteralPath "$private/report-sealing.log" -Append; exit 2 }
+      - name: Upload encrypted original deployments for private recovery
+        if: always() && env.CYPAT_APP_KIT_ORIGINALS_READY == '1'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-round2-app-originals-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/work/originals-envelope/payload.cms
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+      - name: Upload encrypted private preparation report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: encrypted-report-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/result.cms
-          retention-days: 3
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.cms
+          retention-days: 7
           compression-level: 0
           if-no-files-found: error
-      - name: Remove source access key
+      - name: Upload authenticated encrypted application kit after evidence retention
+        if: success() && steps.produce.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-round2-app-kit-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/work/envelope/payload.cms
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
+      - name: Remove source access key and leave private failed state to runner disposal
         if: always()
-        shell: bash
+        shell: pwsh
         run: |
-          set +x
-          exec >"$RUNNER_TEMP/r2p-secret-cleanup.log" 2>&1
-          rm -f -- "$CYPAT_PRIVATE_ROOT/key"
-          # Original private attempts remain until this disposable runner ends.
+          $ErrorActionPreference='Stop'
+          Remove-Item -LiteralPath "$env:CYPAT_PRIVATE_ROOT/key" -Force -ErrorAction SilentlyContinue
 
