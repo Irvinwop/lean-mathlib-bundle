@@ -1,5 +1,5 @@
 name: Automated checks
-run-name: Round2 authenticated native Win11 CORE round2-windows11-core 20261112T055905Z-5ed74d3f06d7
+run-name: Round2 authenticated native Win11 CORE round2-windows11-core 20261112T062056Z-5eef98984e9d
 on:
   push:
     branches: [automation]
@@ -15,8 +15,8 @@ jobs:
     permissions:
       contents: read
     env:
-      SOURCE_COMMIT: 'ed3a1564806ebc62efd70cabba1fb89bc6e82094'
-      QUEUED_SOURCE_SHA256: '2035ffb844f5b7fe5841e29e9bc8558e6e24c2d35a416f350fc3eb11e09c3ae9'
+      SOURCE_COMMIT: '053eb2e2900242985a69c0eb96a46b86f6146d81'
+      QUEUED_SOURCE_SHA256: '6bc3488478c649b8e73ece2eb2cdebfcbdf4a474f5b92e0f85d2fbcf74ea0ae0'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
     steps:
       - name: Admit disposable native host and initialize private failure report
@@ -228,10 +228,10 @@ jobs:
             suffix: '-direct-apply'
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'ed3a1564806ebc62efd70cabba1fb89bc6e82094'
-      QUEUED_SOURCE_SHA256: '2035ffb844f5b7fe5841e29e9bc8558e6e24c2d35a416f350fc3eb11e09c3ae9'
+      SOURCE_COMMIT: '053eb2e2900242985a69c0eb96a46b86f6146d81'
+      QUEUED_SOURCE_SHA256: '6bc3488478c649b8e73ece2eb2cdebfcbdf4a474f5b92e0f85d2fbcf74ea0ae0'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      CYPAT_ROUND2_WIN11_SELECTION_SHA256: '41df77e20827aff230bf1ac83e36d781fed7369f8510cace52d6a0307e1737e0'
+      CYPAT_ROUND2_WIN11_SELECTION_SHA256: '86ad7258fb433fe28d1f2711eb6f342709247d52f8e5e1bc4bec8fbf6d099868'
       CYPAT_ROUND2_APPLY_FIRST: ${{ matrix.apply_first && '1' || '0' }}
       CYPAT_PRIVATE_ROOT: /tmp/r2w-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
@@ -270,6 +270,19 @@ jobs:
           [[ -f CI-ROUND2-WIN11-INPUT.json && ! -L CI-ROUND2-WIN11-INPUT.json ]]
           read -r pin _ < <(sha256sum -- CI-ROUND2-WIN11-INPUT.json)
           test "$pin" = "$CYPAT_ROUND2_WIN11_SELECTION_SHA256"
+          # Bind both reservation and artifact selection to the private input
+          # already authenticated above; absent means the existing full route.
+          /usr/bin/python3 -I -B - <<'PY'
+          import json, os, pathlib
+          raw = pathlib.Path('CI-ROUND2-WIN11-INPUT.json').read_bytes()
+          if len(raw) > 1024**2:
+              raise ValueError('Oversized private input selection')
+          export = json.loads(raw).get('state_export', True)
+          if type(export) is not bool:
+              raise ValueError('State export must be a boolean')
+          with open(os.environ['GITHUB_ENV'], 'a') as stream:
+              stream.write('CYPAT_WIN11_STATE_EXPORT='+('1' if export else '0')+'\n')
+          PY
           printf 'CYPAT_WIN11_SOURCE_ADMITTED=1\n' >> "$GITHUB_ENV"
       - name: Build current source and run actual native CORE
         env:
@@ -316,6 +329,8 @@ jobs:
                   ('source_commit','SOURCE_COMMIT'),('public_commit','GITHUB_SHA'),
                   ('action_id','GITHUB_RUN_ID'),('run_attempt','GITHUB_RUN_ATTEMPT'))},
               'execution_mode':'direct-apply' if os.environ.get('CYPAT_ROUND2_APPLY_FIRST')=='1' else 'inspect-first',
+              'state_export':os.environ.get('CYPAT_WIN11_STATE_EXPORT')=='1',
+              'evidence_scope':'windows11-core-report-only-own-assertions' if os.environ.get('CYPAT_WIN11_STATE_EXPORT')=='0' else 'windows11-core-only',
               'state_sealing_complete':False,'native_hardening_verified':False
           },indent=2)+'\n')
           PY
@@ -340,7 +355,7 @@ jobs:
           compression-level: 0
           if-no-files-found: error
       - name: Seal named stopped state and failed-open evidence
-        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1'
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1' && env.CYPAT_WIN11_STATE_EXPORT == '1'
         shell: bash
         run: |
           set +x
@@ -384,7 +399,7 @@ jobs:
       # Publish the small diagnostic report before the potentially large state
       # transfer. Complete acceptance still requires the authenticated state.
       - name: Upload encrypted stopped state
-        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1'
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1' && env.CYPAT_WIN11_STATE_EXPORT == '1'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: encrypted-round2-win11-state${{ matrix.suffix }}-${{ github.run_attempt }}
@@ -392,6 +407,18 @@ jobs:
           retention-days: 3
           compression-level: 0
           if-no-files-found: error
+      - name: Discard report-only throwaway guest after report publication
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1' && env.CYPAT_WIN11_STATE_EXPORT == '0'
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set +x
+          set -euo pipefail
+          private="$CYPAT_PRIVATE_ROOT"
+          exec >"$RUNNER_TEMP/r2w-discard-state.log" 2>&1
+          RUNNER_TEMP="$private" /usr/bin/timeout --signal=TERM --kill-after=10s 150 \
+            /usr/bin/python3 -I -B "$private/source/tools/round2/windows11_hosted.py" discard-state \
+            --work "$private/w11"
       - name: Remove source access key
         if: always()
         shell: bash
@@ -399,6 +426,6 @@ jobs:
           set +x
           exec >"$RUNNER_TEMP/r2w-secret-cleanup.log" 2>&1
           rm -f -- "$CYPAT_PRIVATE_ROOT/key" "$CYPAT_PRIVATE_ROOT/fixture-input.pem"
-          # Keep failed private state until the disposable runner is destroyed.
+          # Full export keeps failed state until the disposable runner is destroyed.
           # Successful encryption/upload is judged by the exact workflow attempt.
 
