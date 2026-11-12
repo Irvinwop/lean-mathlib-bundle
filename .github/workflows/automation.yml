@@ -1,5 +1,5 @@
 name: Automated checks
-run-name: Round2 build, Windows launch and disposable Server2022 core round2-build 20261112T034558Z-51fd1ae7e4c2
+run-name: Round2 build, Windows launch and disposable Server2022 core round2-build 20261112T042216Z-d3f3b558c98a
 on:
   push:
     branches: [automation]
@@ -16,10 +16,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"bundle_scope":"","stock_bootstrap":false,"windows_parent_cache":"","lane":"round2","target":"round2-build","name":"Round2 compile, parser and transport (no hardening E2E)","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":60}]
+        include: [{"bundle_scope":"","stock_bootstrap":false,"apply_first":false,"windows_parent_cache":"","lane":"round2","target":"round2-build","name":"Round2 compile, parser and transport (no hardening E2E)","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":60}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'f0482393519896ebbdb13ed26eab0ac875d56407'
+      SOURCE_COMMIT: 'be8344c51b60b9be48bc4310cc8262e2ea40fa08'
       TARGET: '${{ matrix.target }}'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
@@ -67,6 +67,7 @@ jobs:
           CYPAT_RETURN_TESTED_BUNDLE: ${{ matrix.return_bundle && '1' || '0' }}
           CYPAT_PREPARE_STOCK_WINDOWS: ${{ matrix.stock_bootstrap && '1' || '0' }}
           CYPAT_WINDOWS_PARENT_CACHE_MODE: ${{ matrix.windows_parent_cache }}
+          CYPAT_ROUND2_APPLY_FIRST: ${{ matrix.apply_first && '1' || '0' }}
         shell: bash
         run: |
           set +x
@@ -163,8 +164,8 @@ jobs:
     timeout-minutes: 20
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'f0482393519896ebbdb13ed26eab0ac875d56407'
-      QUEUED_SOURCE_SHA256: '0578d75a8cbb7e8a17c84c8347696664eadb489ec6a1d321163b1edc17f6f57d'
+      SOURCE_COMMIT: 'be8344c51b60b9be48bc4310cc8262e2ea40fa08'
+      QUEUED_SOURCE_SHA256: '1fe5f0d647aea7ab36fd48a272e73e1eafd0e83dc3a93f10ed4be2b100514346'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       INPUT_SHA256: ${{ needs.checks.outputs.round2_input_sha256 }}
     steps:
@@ -300,22 +301,33 @@ jobs:
           if-no-files-found: error
 
   round2_server_core_e2e:
-    name: Round2 disposable Server2022 core E2E (updates untested)
+    name: ${{ matrix.name }}
     needs: [checks]
-    # Independent native Server lane: its own packaged inspect precedes apply.
+    # Each mode receives its own fresh native runner and the same pinned input.
     # Return a blocked receipt even when its build gate fails. No source,
     # input, installer or mutating fixture runs after a failed launch/build gate.
     if: always() && !cancelled()
     runs-on: windows-2022
     timeout-minutes: 190
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Round2 disposable Server2022 core E2E (updates untested)
+            apply_first: false
+            suffix: ''
+          - name: Round2 disposable Server2022 direct Apply then re-Inspect (updates untested)
+            apply_first: true
+            suffix: '-direct-apply'
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'f0482393519896ebbdb13ed26eab0ac875d56407'
-      QUEUED_SOURCE_SHA256: '0578d75a8cbb7e8a17c84c8347696664eadb489ec6a1d321163b1edc17f6f57d'
+      SOURCE_COMMIT: 'be8344c51b60b9be48bc4310cc8262e2ea40fa08'
+      QUEUED_SOURCE_SHA256: '1fe5f0d647aea7ab36fd48a272e73e1eafd0e83dc3a93f10ed4be2b100514346'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       INPUT_SHA256: ${{ needs.checks.outputs.round2_input_sha256 }}
       BUILD_RESULT: ${{ needs.checks.result }}
       SMOKE_RESULT: 'independent-server-native'
+      CYPAT_ROUND2_APPLY_FIRST: ${{ matrix.apply_first && '1' || '0' }}
     steps:
       - name: Create private receipt and enforce build and launch gates
         shell: pwsh
@@ -338,6 +350,10 @@ jobs:
             runner='windows-2022';job='round2_server_core_e2e';workflow_ref=$env:GITHUB_WORKFLOW_REF
             build_result=$env:BUILD_RESULT;smoke_result=$env:SMOKE_RESULT;fixture_invoked=$false;native_core_verified=$false
             updates='untested: --skip-updates; separate vendor and Windows Update maintenance required'}
+          if($env:CYPAT_ROUND2_APPLY_FIRST -ceq '1'){
+            $initial.execution_mode='direct-apply';$initial.apply_first=$true;$initial.default_graph_checks_passed=$false
+            $initial.direct_apply_observed=$false;$initial.direct_apply_classification='unverified'
+          }
           [IO.File]::WriteAllText("$private/report/core-job.json",($initial|ConvertTo-Json -Depth 8))
           [IO.File]::WriteAllText("$private/report/exit-code",'2')
           if($env:BUILD_RESULT -cne 'success' -or $env:SMOKE_RESULT -cne 'independent-server-native' -or $env:INPUT_SHA256 -cnotmatch '\A[a-f0-9]{64}\z'){exit 2}
@@ -427,7 +443,7 @@ jobs:
               $job|ConvertTo-Json -Depth 8|Set-Content -LiteralPath "$private/report/core-job.json"
             } *> "$private/report/core-prepare.log"
           } catch { $_ | Out-File -LiteralPath "$private/report/core-prepare.log" -Append; exit 2 }
-      - name: Execute delivered Server2022 inspect apply and repeat on this fresh runner
+      - name: Execute delivered Server2022 CORE mode on this fresh runner
         id: core_native
         shell: pwsh
         run: |
@@ -436,7 +452,9 @@ jobs:
             $job=Get-Content -LiteralPath "$private/report/core-job.json" -Raw|ConvertFrom-Json
             $job.phase='native core fixture';$job.fixture_invoked=$true
             $job|ConvertTo-Json -Depth 8|Set-Content -LiteralPath "$private/report/core-job.json"
-            & "$private/source/tools/round2/server-core-e2e.ps1" -EnableDisposableHostedFixture -PrivateRoot $private -FixtureManifestSHA256 $env:CORE_FIXTURE_MANIFEST_SHA256 -ProductTimeoutSeconds 1800 *> "$private/report/server-core-stage.log"
+            $modeArguments=@{}
+            if($env:CYPAT_ROUND2_APPLY_FIRST -ceq '1'){$modeArguments.ApplyFirst=$true}
+            & "$private/source/tools/round2/server-core-e2e.ps1" -EnableDisposableHostedFixture -PrivateRoot $private -FixtureManifestSHA256 $env:CORE_FIXTURE_MANIFEST_SHA256 -ProductTimeoutSeconds 1800 @modeArguments *> "$private/report/server-core-stage.log"
           } catch { $_ | Out-File -LiteralPath "$private/report/stage-error.log" }
           # A fixture admission exception or absent receipt/code never passes.
           $code=2
@@ -444,15 +462,19 @@ jobs:
             $raw=[IO.File]::ReadAllText("$private/report/server-core-e2e/exit-code").Trim()
             if($raw -cmatch '\A[012]\z'){$code=[int]$raw}
             $fixture=Get-Content -LiteralPath "$private/report/server-core-e2e/receipt.json" -Raw|ConvertFrom-Json
-            if($code -eq 0 -and ($fixture.status -cne 'passed' -or $fixture.native_core_verified -ne $true)){$code=2}
-            $job.native_core_verified=$code -eq 0 -and $fixture.native_core_verified -eq $true
+            $direct=$env:CYPAT_ROUND2_APPLY_FIRST -ceq '1'
+            if($code -eq 0 -and ($fixture.status -cne 'passed' -or
+                (-not $direct -and $fixture.native_core_verified -ne $true) -or
+                ($direct -and $fixture.apply_first -ne $true -and $fixture.execution_mode -cne 'direct-apply'))){$code=2}
+            $job.native_core_verified=-not $direct -and $code -eq 0 -and $fixture.native_core_verified -eq $true
+            if($direct){$job.direct_apply_observed=$code -eq 0}
           }
           $job.status=if($code -eq 0){'passed'}elseif($code -eq 1){'failed'}else{'blocked'}
           $job|ConvertTo-Json -Depth 8|Set-Content -LiteralPath "$private/report/core-job.json"
           [IO.File]::WriteAllText("$private/report/exit-code",[string]$code)
           exit $code
       - name: Collect direct Apply evidence after an Inspect contract failure
-        if: always() && steps.core_native.outcome == 'failure' && needs.checks.result == 'success'
+        if: always() && !matrix.apply_first && steps.core_native.outcome == 'failure' && needs.checks.result == 'success'
         shell: pwsh
         run: |
           $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
@@ -578,7 +600,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: encrypted-round2-server-core-e2e-${{ github.run_attempt }}
+          name: encrypted-round2-server-core-e2e${{ matrix.suffix }}-${{ github.run_attempt }}
           path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.cms
           retention-days: 3
           compression-level: 0
