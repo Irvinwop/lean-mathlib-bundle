@@ -1,5 +1,5 @@
 name: Automated checks
-run-name: Round2 authenticated Debian12 native CORE round2-debian-core 20261112T065326Z-55c593060e31
+run-name: Round2 authenticated native Win11 CORE round2-windows11-core 20261112T065335Z-570dfde1e48e
 on:
   push:
     branches: [automation]
@@ -7,50 +7,256 @@ on:
 permissions:
   contents: read
 jobs:
-  checks:
+  round2_windows11_preflight:
+    name: Round2 Win11 Inspect source contract (Desktop 5.1 only)
+    runs-on: windows-2022
+    timeout-minutes: 10
+    environment: private-fixtures
+    permissions:
+      contents: read
+    env:
+      SOURCE_COMMIT: '08097754b94722990080335906ecd6da75222234'
+      QUEUED_SOURCE_SHA256: '9fb227c5f1692ec689ac6f8043f081f839deb6cb0ae4744dcccff007d510c07a'
+      REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
+    steps:
+      - name: Admit disposable native host and initialize private failure report
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$ProgressPreference='SilentlyContinue'
+          if($env:GITHUB_ACTIONS -cne 'true' -or $env:RUNNER_ENVIRONMENT -cne 'github-hosted' -or
+             $env:RUNNER_OS -cne 'Windows' -or $env:RUNNER_ARCH -cne 'X64' -or $env:ImageOS -cne 'win22' -or
+             $env:OS -cne 'Windows_NT' -or $PSVersionTable.PSEdition -cne 'Core' -or -not [Environment]::Is64BitProcess -or
+             $env:GITHUB_JOB -cne 'round2_windows11_preflight' -or
+             $env:GITHUB_WORKFLOW_REF -cne 'Irvinwop/lean-mathlib-bundle/.github/workflows/automation.yml@refs/heads/automation'){
+            throw 'Require the dedicated disposable GitHub-hosted Windows x64 preflight'
+          }
+          if($env:GITHUB_RUN_ID -cnotmatch '\A[1-9][0-9]*\z' -or $env:GITHUB_RUN_ATTEMPT -cnotmatch '\A[1-9][0-9]*\z' -or
+             $env:SOURCE_COMMIT -cnotmatch '\A[a-f0-9]{40}\z' -or $env:QUEUED_SOURCE_SHA256 -cnotmatch '\A[a-f0-9]{64}\z'){
+            throw 'Require an exact source and hosted run attempt'
+          }
+          $private=Join-Path $env:RUNNER_TEMP ('r2wp-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          if([IO.Directory]::Exists($private) -or [IO.File]::Exists($private)){throw 'Preserve an existing private job root'}
+          $sid=[Security.Principal.WindowsIdentity]::GetCurrent().User
+          $acl=[Security.AccessControl.DirectorySecurity]::new();$acl.SetOwner($sid);$acl.SetAccessRuleProtection($true,$false)
+          foreach($id in @($sid.Value,'S-1-5-18','S-1-5-32-544')){
+            $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($id),'FullControl','ContainerInherit,ObjectInherit','None','Allow'))
+          }
+          $null=[IO.FileSystemAclExtensions]::Create([IO.DirectoryInfo]::new($private),$acl)
+          [IO.File]::AppendAllText($env:GITHUB_ENV,('CYPAT_PRIVATE_ROOT='+$private+"`n"),[Text.UTF8Encoding]::new($false))
+          $null=New-Item -ItemType Directory -Path "$private/source","$private/report"
+          $initial=@{protocol='nyascripts-round2-win11-focused-preflight-v1';status='incomplete';source_sha256=$env:QUEUED_SOURCE_SHA256
+            origin=@{source_commit=$env:SOURCE_COMMIT;public_commit=$env:GITHUB_SHA;action_id=$env:GITHUB_RUN_ID;run_attempt=$env:GITHUB_RUN_ATTEMPT}
+            runner='windows-2022';job=$env:GITHUB_JOB;source_integrity='not-run';native_hardening_verified=$false;host_hardening_executed=$false
+            e2e_validation='not-performed';windows11_validation='not-performed'
+            source_regression=@{protocol='nyascripts-round2-win11-inspect-source-v1';status='not-run'
+              scope='private synthetic file-evidence reconciliation only';test='tests/Test-Round2Windows11InspectContract.ps1'}}
+          [IO.File]::WriteAllText("$private/report/receipt.json",($initial|ConvertTo-Json -Depth 12))
+          [IO.File]::WriteAllText("$private/report/exit-code",'2')
+      - name: Obtain and admit the exact private source snapshot
+        timeout-minutes: 3
+        env:
+          SOURCE_KEY: ${{ secrets.FIXTURE_SOURCE_KEY }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          try {
+            & {
+              $key=($env:SOURCE_KEY -replace "`r`n","`n").TrimEnd([char[]]"`r`n")+"`n"
+              [IO.File]::WriteAllText("$private/key",$key,[Text.UTF8Encoding]::new($false));Remove-Item Env:SOURCE_KEY;$key=$null
+              $sid=[Security.Principal.WindowsIdentity]::GetCurrent().User
+              $acl=[Security.AccessControl.FileSecurity]::new();$acl.SetOwner($sid);$acl.SetAccessRuleProtection($true,$false)
+              $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($sid,'FullControl','Allow'))
+              Set-Acl -LiteralPath "$private/key" -AclObject $acl
+              [IO.File]::WriteAllText("$private/known_hosts","github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl`n")
+              $sshRoot=$private.Replace('\','/')
+              $env:GIT_SSH_COMMAND='"C:/Windows/System32/OpenSSH/ssh.exe" -F none -i "'+$sshRoot+'/key" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile="'+$sshRoot+'/known_hosts"'
+              $env:GIT_SSH_VARIANT='ssh';$env:GIT_CONFIG_NOSYSTEM='1';$env:GIT_CONFIG_GLOBAL='NUL';$env:GIT_TERMINAL_PROMPT='0'
+              & git -C "$private/source" init -q
+              if($LASTEXITCODE){throw 'Private initialization failed'}
+              & git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git $env:SOURCE_COMMIT
+              if($LASTEXITCODE){throw 'Private source fetch failed'}
+              & git -C "$private/source" -c core.hooksPath=NUL -c core.autocrlf=false -c core.eol=lf checkout -q --detach FETCH_HEAD
+              if($LASTEXITCODE){throw 'Private checkout failed'}
+              $commit=& git -C "$private/source" rev-parse HEAD
+              if($LASTEXITCODE -or $commit -cne $env:SOURCE_COMMIT){throw 'Private commit differs'}
+              foreach($name in @('CI-SOURCE.sha256','CI-SOURCE.SHA256SUMS')){
+                $cursor=Join-Path "$private/source" $name
+                while($cursor){
+                  if([IO.File]::GetAttributes($cursor) -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device)){throw 'Linked/device source metadata refused'}
+                  $parent=[IO.Directory]::GetParent($cursor);$cursor=if($parent){$parent.FullName}else{$null}
+                }
+              }
+              if([IO.File]::ReadAllText("$private/source/CI-SOURCE.sha256").Trim() -cne $env:QUEUED_SOURCE_SHA256){throw 'Queued source snapshot differs'}
+              if(([IO.FileInfo]::new("$private/source/CI-SOURCE.SHA256SUMS")).Length -gt 4MB){throw 'Unbounded source manifest refused'}
+              $manifestPin=(Get-FileHash -LiteralPath "$private/source/CI-SOURCE.SHA256SUMS" -Algorithm SHA256).Hash.ToLowerInvariant()
+              $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+              foreach($line in [IO.File]::ReadAllLines("$private/source/CI-SOURCE.SHA256SUMS")){
+                if($line -cnotmatch '\A([a-f0-9]{64})  ([A-Za-z0-9_./+@-]+)\z'){throw 'Invalid source manifest'}
+                $pin=$Matches[1];$name=$Matches[2]
+                if($name.StartsWith('/') -or -not $seen.Add($name) -or @($name.Split('/')|Where-Object {$_ -in @('','.','..')}).Count){throw 'Unsafe or aliased source row'}
+                foreach($part in $name.Split('/')){
+                  $fold=$part.ToLowerInvariant() -replace '[^a-z0-9]',''
+                  if($fold -match 'donotread|cyberpatriot|aeacus|scorer|scoring|confidential|abliteration' -or $fold -in @('ccs','official','private','protected')){throw 'Excluded source row before access'}
+                }
+                $cursor=Join-Path "$private/source" $name
+                while($cursor){
+                  if([IO.File]::GetAttributes($cursor) -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device)){throw 'Linked/device source refused'}
+                  $parent=[IO.Directory]::GetParent($cursor);$cursor=if($parent){$parent.FullName}else{$null}
+                }
+                if((Get-FileHash -LiteralPath "$private/source/$name" -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pin){throw 'Private source bytes differ'}
+              }
+              foreach($required in @('tools/round2/windows-smoke.ps1','tests/Test-Round2Windows11InspectContract.ps1',
+                  'tools/round2/windows11-fixture/Native.cs','tools/round2/windows11-fixture/core.ps1','tools/ci/windows_preflight.py')){
+                if(-not $seen.Contains($required)){throw 'Source manifest omits an Inspect preflight dependency'}
+              }
+              if((Get-FileHash -LiteralPath "$private/source/CI-SOURCE.SHA256SUMS" -Algorithm SHA256).Hash.ToLowerInvariant() -cne $manifestPin){throw 'Source manifest changed during admission'}
+              [IO.File]::WriteAllText("$private/source-manifest.sha256",$manifestPin)
+              [IO.File]::WriteAllText("$private/source-admitted",$env:SOURCE_COMMIT)
+            } *> "$private/report/source-bootstrap.log"
+          } catch { $_ | Out-File -LiteralPath "$private/report/source-bootstrap.log" -Append; exit 2 }
+          finally { Remove-Item -LiteralPath "$private/key" -Force -ErrorAction SilentlyContinue }
+      - name: Run same-source synthetic Inspect contract on signed Desktop 5.1 x64
+        id: inspect_contract
+        timeout-minutes: 3
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT;$receipt=$null
+          try {
+            $receipt=[IO.File]::ReadAllText("$private/report/receipt.json",[Text.UTF8Encoding]::new($false,$true))|ConvertFrom-Json -AsHashtable
+            & {
+              $utf8=[Text.UTF8Encoding]::new($false,$true)
+              $sourceRoot=Join-Path $private 'source';$result=Join-Path $private 'report'
+              if([IO.File]::ReadAllText("$private/source-admitted",$utf8) -cne $env:SOURCE_COMMIT -or
+                 [IO.File]::ReadAllText("$sourceRoot/CI-SOURCE.sha256",$utf8).Trim() -cne $env:QUEUED_SOURCE_SHA256){throw 'Require this exact admitted queued source'}
+              $manifest=@{source_manifest_sha256=[IO.File]::ReadAllText("$private/source-manifest.sha256",$utf8)}
+              if((Get-FileHash -LiteralPath "$sourceRoot/CI-SOURCE.SHA256SUMS" -Algorithm SHA256).Hash.ToLowerInvariant() -cne $manifest.source_manifest_sha256){throw 'Admitted source manifest changed'}
+              $inspectSources=@('tests/Test-Round2Windows11InspectContract.ps1',
+                'tools/round2/windows11-fixture/Native.cs','tools/round2/windows11-fixture/core.ps1','tools/round2/windows-smoke.ps1')
+              $inspectCase='windows11-inspect-contract'
+              # Reuse only the admitted smoke script's existing source-regression
+              # functions. Its top-level body and delivered Launch never execute.
+              $errors=$null;$tokens=$null
+              $ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $sourceRoot 'tools/round2/windows-smoke.ps1'),[ref]$tokens,[ref]$errors)
+              if($errors.Count){throw 'Inspect source helper did not parse'}
+              foreach($name in @('Ordinary','Pin','Save','Check-Source','Capture','Inspect-Source')){
+                $definition=@($ast.FindAll({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -ceq $name},$false))
+                if($definition.Count -ne 1){throw 'Require exactly one existing Inspect source helper'}
+                . ([scriptblock]::Create($definition[0].Extent.Text))
+              }
+              Ordinary $private;Ordinary $result;Ordinary $sourceRoot
+              $inspectPins=Check-Source
+              Inspect-Source $inspectPins
+              if($receipt.source_regression.status -cne 'passed'){throw 'Inspect source contract did not pass'}
+              $receipt.source_integrity='passed';$receipt.status='passed';Save
+              [IO.File]::WriteAllText((Join-Path $result 'exit-code'),'0',$utf8)
+            } *> "$private/report/inspect-preflight.log"
+          } catch {
+            $_ | Out-File -LiteralPath "$private/report/inspect-preflight.log" -Append
+            if($null -ne $receipt){$receipt.status='failed';$receipt.failure=$_.Exception.Message;[IO.File]::WriteAllText("$private/report/receipt.json",($receipt|ConvertTo-Json -Depth 12))}
+            [IO.File]::WriteAllText("$private/report/exit-code",'1')
+            exit 1
+          }
+      - name: Encrypt bounded preflight evidence and early source failures
+        if: always()
+        timeout-minutes: 2
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          $PSNativeCommandUseErrorActionPreference=$false
+          if([string]::IsNullOrEmpty($private)){exit 2}
+          try {
+            & {
+              [IO.File]::WriteAllBytes("$private/report.crt",[Convert]::FromBase64String($env:REPORT_CERT_BASE64))
+              $sealed=$false
+              if([IO.File]::Exists("$private/source-admitted")){
+                & python -I -B "$private/source/tools/ci/windows_preflight.py" seal-directory --directory "$private/report" --output "$private/sealed" --certificate "$private/report.crt" --openssl 'C:\Program Files\Git\usr\bin\openssl.exe'
+                $sealed=$LASTEXITCODE -eq 0
+              }
+              if($sealed){[IO.File]::Move("$private/sealed/report.cms","$private/report.cms")}
+              else {
+                # Source-independent, bounded diagnostic fallback; it always fails
+                # the job even when encryption succeeds. No source tree is zipped.
+                $null=[IO.Directory]::CreateDirectory("$private/fallback")
+                foreach($name in @('receipt.json','exit-code','source-bootstrap.log','inspect-preflight.log','CI-SOURCE.SHA256SUMS',
+                    'windows11-inspect-contract.stdout','windows11-inspect-contract.stderr')){
+                  $path=Join-Path "$private/report" $name
+                  if(-not [IO.File]::Exists($path)){continue}
+                  if([IO.File]::GetAttributes($path) -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device)){throw 'Linked/device fallback evidence refused'}
+                  $stream=[IO.File]::OpenRead($path)
+                  try{$bytes=[byte[]]::new(65536);$count=$stream.Read($bytes,0,$bytes.Length);$out=[IO.File]::Create("$private/fallback/$name");try{$out.Write($bytes,0,$count)}finally{$out.Dispose()}}finally{$stream.Dispose()}
+                }
+                [IO.File]::WriteAllText("$private/fallback/report-fallback.json",'{"status":"failed","normal_report_sealing":false,"diagnostics_may_be_truncated":true,"native_hardening_verified":false}')
+                [IO.Compression.ZipFile]::CreateFromDirectory("$private/fallback","$private/fallback.zip",[IO.Compression.CompressionLevel]::NoCompression,$false)
+                & 'C:\Program Files\Git\usr\bin\openssl.exe' cms -encrypt -binary -aes-256-gcm -outform DER -in "$private/fallback.zip" -out "$private/report.cms.partial" "$private/report.crt"
+                if($LASTEXITCODE){throw 'Fallback report encryption failed'}
+                [IO.File]::Move("$private/report.cms.partial","$private/report.cms")
+                throw 'Normal preflight sealing unavailable; encrypted failure diagnostics retained'
+              }
+            } *> "$private/report-sealing.log"
+          } catch { $_ | Out-File -LiteralPath "$private/report-sealing.log" -Append; exit 2 }
+      - name: Upload encrypted focused Win11 preflight report
+        if: always()
+        timeout-minutes: 1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-round2-win11-preflight-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+      - name: Remove source access key
+        if: always()
+        shell: pwsh
+        run: |
+          $private=$env:CYPAT_PRIVATE_ROOT
+          if([string]::IsNullOrEmpty($private)){exit 0}
+          & { Remove-Item -LiteralPath "$private/key" -Force -ErrorAction SilentlyContinue } *> "$private/key-cleanup.log"
+  # Synthetic preflight stays a separate failing lane; native evidence is independent.
+  round2_windows11_core:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
-    outputs:
-      round2_input_sha256: ${{ steps.round2_input.outputs.sha256 }}
-    timeout-minutes: ${{ matrix.timeout }}
+    timeout-minutes: 360
     strategy:
       fail-fast: false
       matrix:
-        include: [{"bundle_scope":"","stock_bootstrap":false,"apply_first":false,"windows_parent_cache":"","lane":"round2-debian-core","target":"round2-debian-core","name":"Debian12 authenticated preparation and delivered CORE","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":180},{"bundle_scope":"","stock_bootstrap":false,"apply_first":true,"windows_parent_cache":"","lane":"round2-debian-core-direct-apply","target":"round2-debian-core","name":"Debian12 fresh direct Apply then re-Inspect","artifact":"encrypted-report-direct-apply","native":true,"return_bundle":false,"timeout":180}]
+        include:
+          - name: Round2 native Windows11 CORE (partial acceptance)
+            apply_first: false
+            suffix: ''
+          - name: Round2 native Windows11 direct Apply then re-Inspect (partial acceptance)
+            apply_first: true
+            suffix: '-direct-apply'
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '19420cff2478cfa22a75fd805a88736776bcbae7'
-      TARGET: '${{ matrix.target }}'
+      SOURCE_COMMIT: '08097754b94722990080335906ecd6da75222234'
+      QUEUED_SOURCE_SHA256: '9fb227c5f1692ec689ac6f8043f081f839deb6cb0ae4744dcccff007d510c07a'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      CYPAT_PRIVATE_ROOT: /tmp/cypat-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.lane }}
+      CYPAT_ROUND2_WIN11_SELECTION_SHA256: '86ad7258fb433fe28d1f2711eb6f342709247d52f8e5e1bc4bec8fbf6d099868'
+      CYPAT_ROUND2_APPLY_FIRST: ${{ matrix.apply_first && '1' || '0' }}
+      CYPAT_PRIVATE_ROOT: /tmp/r2w-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      - name: Download private input
+      - name: Obtain exact private source and input selection
         env:
           SOURCE_KEY: ${{ secrets.FIXTURE_SOURCE_KEY }}
         shell: bash
         run: |
           set +x
+          set -euo pipefail
           umask 077
           private="$CYPAT_PRIVATE_ROOT"
-          if [[ $TARGET == round2-debian-core ]]; then
-            # The native Debian driver requires runner ownership, not /tmp's
-            # root ownership. Keep guest disks beside report, never inside it.
-            mkdir -m 700 -- "$private"
-          fi
-          mkdir -p "$private/report" "$private/source"
-          echo 125 > "$private/report/exit-code"
-          # Never print a private command's error, a source filename, or a log tail.
+          mkdir -m 700 -- "$private"
+          mkdir -m 700 -- "$private/source" "$private/report"
+          printf '2\n' > "$private/report/exit-code"
           exec >"$private/report/bootstrap.log" 2>&1
           printf '%s\n' "$SOURCE_KEY" > "$private/key"
-          trap 'rm -f "$private/key"' EXIT
-          # Published GitHub Ed25519 host key, independently fingerprint-checked
-          # on the trusted preparation machine. No unauthenticated API request.
+          unset SOURCE_KEY
+          trap 'rm -f -- "$private/key"' EXIT
           printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > "$private/known_hosts"
+          export GIT_SSH_COMMAND="ssh -F /dev/null -i $private/key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile=$private/known_hosts"
+          export GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null GIT_TERMINAL_PROMPT=0
           git -C "$private/source" init -q
-          export GIT_SSH_COMMAND="ssh -i $private/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile=$private/known_hosts"
           git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git "$SOURCE_COMMIT"
-          git -C "$private/source" -c core.hooksPath=/dev/null checkout -q --detach FETCH_HEAD
+          git -C "$private/source" -c core.hooksPath=/dev/null -c core.autocrlf=false checkout -q --detach FETCH_HEAD
           test "$(git -C "$private/source" rev-parse HEAD)" = "$SOURCE_COMMIT"
           cd "$private/source"
           while IFS= read -r -d '' row; do
@@ -59,101 +265,167 @@ jobs:
             [[ $mode =~ ^[0-7]{3,4}$ && -n $path && $path != /* && /$path/ != */../* && ! -L $path ]]
             chmod "$mode" -- "$path"
           done < CI-SOURCE.modes
-          sha256sum --check --strict CI-SOURCE.SHA256SUMS
-      - name: Run private test graph
+          sha256sum --check --strict --quiet CI-SOURCE.SHA256SUMS
+          test "$(cat CI-SOURCE.sha256)" = "$QUEUED_SOURCE_SHA256"
+          [[ -f CI-ROUND2-WIN11-INPUT.json && ! -L CI-ROUND2-WIN11-INPUT.json ]]
+          read -r pin _ < <(sha256sum -- CI-ROUND2-WIN11-INPUT.json)
+          test "$pin" = "$CYPAT_ROUND2_WIN11_SELECTION_SHA256"
+          # Bind both reservation and artifact selection to the private input
+          # already authenticated above; absent means the existing full route.
+          /usr/bin/python3 -I -B - <<'PY'
+          import json, os, pathlib
+          raw = pathlib.Path('CI-ROUND2-WIN11-INPUT.json').read_bytes()
+          if len(raw) > 1024**2:
+              raise ValueError('Oversized private input selection')
+          export = json.loads(raw).get('state_export', True)
+          if type(export) is not bool:
+              raise ValueError('State export must be a boolean')
+          with open(os.environ['GITHUB_ENV'], 'a') as stream:
+              stream.write('CYPAT_WIN11_STATE_EXPORT='+('1' if export else '0')+'\n')
+          PY
+          printf 'CYPAT_WIN11_SOURCE_ADMITTED=1\n' >> "$GITHUB_ENV"
+      - name: Build current source and run actual native CORE
         env:
-          FIXTURE_INPUT_KEY: ${{ matrix.native && secrets.FIXTURE_INPUT_KEY || '' }}
-          CYPAT_BUNDLE_SCOPE: ${{ matrix.bundle_scope }}
-          CYPAT_RETURN_TESTED_BUNDLE: ${{ matrix.return_bundle && '1' || '0' }}
-          CYPAT_PREPARE_STOCK_WINDOWS: ${{ matrix.stock_bootstrap && '1' || '0' }}
-          CYPAT_WINDOWS_PARENT_CACHE_MODE: ${{ matrix.windows_parent_cache }}
-          CYPAT_ROUND2_APPLY_FIRST: ${{ matrix.apply_first && '1' || '0' }}
+          FIXTURE_INPUT_KEY: ${{ secrets.FIXTURE_INPUT_KEY }}
         shell: bash
         run: |
           set +x
-          private="$CYPAT_PRIVATE_ROOT"
-          exec >>"$private/report/bootstrap.log" 2>&1
-          if [[ -n $FIXTURE_INPUT_KEY ]]; then
-            umask 077
-            printf '%s\n' "$FIXTURE_INPUT_KEY" > "$private/fixture-input.pem"
-            export CYPAT_FIXTURE_KEY="$private/fixture-input.pem"
-          fi
-          unset FIXTURE_INPUT_KEY
-          trap 'rm -f "$private/fixture-input.pem"' EXIT
-          if [[ $CYPAT_WINDOWS_PARENT_CACHE_MODE == export || $TARGET == round2-build || $TARGET == round2-debian-core ]]; then
-            printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d > "$private/fixtures.crt"
-            export CYPAT_FIXTURE_CERTIFICATE="$private/fixtures.crt"
-          fi
-          cd "$private/source"
-          code=0
-          if [[ $TARGET == round2-debian-core ]]; then
-            RUNNER_TEMP="$private" /bin/bash ci/hosted-run "$TARGET" "$private/report" || code=$?
-          else
-            RUNNER_TEMP=/tmp /bin/bash ci/hosted-run "$TARGET" "$private/report" || code=$?
-          fi
-          printf '%s\n' "$code" > "$private/report/exit-code"
-          if [[ -f $private/report/windows-parent/receipt.json && -f $private/report.windows-parent/descriptor.json ]]; then
-            printf '%s\n' 'CYPAT_WINDOWS_PARENT_READY=1' >> "$GITHUB_ENV"
-          fi
-          exit "$code"
-      - name: Pin encrypted Round2 Windows input
-        if: always() && matrix.target == 'round2-build'
-        id: round2_input
-        shell: bash
-        run: |
-          set +x
-          read -r pin _ < <(sha256sum -- "$CYPAT_PRIVATE_ROOT/report.round2-input/payload.cms")
-          [[ $pin =~ ^[a-f0-9]{64}$ ]]
-          printf 'sha256=%s\n' "$pin" >> "$GITHUB_OUTPUT"
-      - name: Upload encrypted Round2 Windows input
-        if: always() && matrix.target == 'round2-build' && steps.round2_input.outputs.sha256 != ''
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: encrypted-round2-windows-input-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.round2-input/payload.cms
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
-      - name: Upload encrypted Windows parent chunks
-        if: always() && env.CYPAT_WINDOWS_PARENT_READY == '1'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: encrypted-windows-parent-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.windows-parent/*.cms
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
-      - name: Encrypt private report
-        if: always()
-        shell: bash
-        run: |
-          set +x
+          set -euo pipefail
           umask 077
           private="$CYPAT_PRIVATE_ROOT"
-          # Only the report public certificate is needed for sealing.
-          exec >"$RUNNER_TEMP/report-sealing.log" 2>&1
-          printf '%s' "$REPORT_CERT_BASE64" | base64 -d > "$private/report.crt"
-          tar -C "$private" -I 'zstd -T2 -3' -cf "$private/result.tar.zst" report
-          openssl cms -encrypt -binary -aes-256-gcm -outform DER \
-            -in "$private/result.tar.zst" -out "$RUNNER_TEMP/result.cms.partial" "$private/report.crt"
-          mv "$RUNNER_TEMP/result.cms.partial" "$RUNNER_TEMP/result.cms"
-      - name: Upload encrypted report
-        if: always()
+          exec >>"$private/report/bootstrap.log" 2>&1
+          printf '%s\n' "$FIXTURE_INPUT_KEY" > "$private/fixture-input.pem"
+          unset FIXTURE_INPUT_KEY
+          export CYPAT_FIXTURE_KEY="$private/fixture-input.pem"
+          trap 'rm -f -- "$private/fixture-input.pem"' EXIT
+          # The focused target reuses the existing hosted dependency/build gates.
+          # Its actual work/overlay stays beside report in this short private root.
+          cd "$private/source"
+          code=0
+          RUNNER_TEMP="$private" /bin/bash ci/hosted-run round2-windows11-core "$private/report" || code=$?
+          printf '%s\n' "$code" > "$private/report/exit-code"
+          exit "$code"
+      - name: Publish encrypted native phase evidence before stopped-state sealing
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+          private="$CYPAT_PRIVATE_ROOT"
+          exec >"$private/early-report-sealing.log" 2>&1
+          test -f "$private/report/round2/windows11-guest/job.json"
+          mkdir -m 700 "$private/early-native"
+          printf '%s' "$REPORT_CERT_BASE64" | base64 -d > "$private/early-native/report.crt"
+          # A phase report is useful before the much larger stopped state is
+          # sealed. It cannot establish final state or full native acceptance.
+          /usr/bin/python3 - "$private/report/early-native-metadata.json" <<'PY'
+          import json, os, pathlib
+          pathlib.Path(os.sys.argv[1]).write_text(json.dumps({
+              'scope':'unverified-native-phase-evidence',
+              'source_sha256':os.environ['QUEUED_SOURCE_SHA256'],
+              'origin':{k:os.environ[v] for k,v in (
+                  ('source_commit','SOURCE_COMMIT'),('public_commit','GITHUB_SHA'),
+                  ('action_id','GITHUB_RUN_ID'),('run_attempt','GITHUB_RUN_ATTEMPT'))},
+              'execution_mode':'direct-apply' if os.environ.get('CYPAT_ROUND2_APPLY_FIRST')=='1' else 'inspect-first',
+              'state_export':os.environ.get('CYPAT_WIN11_STATE_EXPORT')=='1',
+              'evidence_scope':'windows11-core-report-only-own-assertions' if os.environ.get('CYPAT_WIN11_STATE_EXPORT')=='0' else 'windows11-core-only',
+              'state_sealing_complete':False,'native_hardening_verified':False
+          },indent=2)+'\n')
+          PY
+          /usr/bin/timeout --signal=TERM --kill-after=10s 180 /usr/bin/tar -C "$private" \
+            --exclude='*/[dD][oO]_[nN][oO][tT]_[rR][eE][aA][dD]' \
+            --exclude='*.qcow2' --exclude='*.raw' --exclude='*.vhdx' --exclude='*.iso' \
+            -I 'zstd -T2 -3' -cf "$private/early-native/report.tar.zst" \
+            report/source report/round2/windows11-guest report/early-native-metadata.json
+          test "$(stat -c %s "$private/early-native/report.tar.zst")" -le 1073741824
+          /usr/bin/openssl cms -encrypt -binary -aes-256-gcm -outform DER \
+            -in "$private/early-native/report.tar.zst" -out "$private/early-native/report.cms.partial" \
+            "$private/early-native/report.crt"
+          mv "$private/early-native/report.cms.partial" "$private/early-native/report.cms"
+      - name: Upload encrypted native phase report
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1'
+        continue-on-error: true
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: ${{ matrix.artifact }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/result.cms
+          name: encrypted-round2-win11-native-early${{ matrix.suffix }}-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/early-native/report.cms
           retention-days: 3
           compression-level: 0
           if-no-files-found: error
-      - name: Remove temporary private input
+      - name: Seal named stopped state and failed-open evidence
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1' && env.CYPAT_WIN11_STATE_EXPORT == '1'
+        shell: bash
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+          private="$CYPAT_PRIVATE_ROOT"
+          exec >"$private/report/state-sealing.log" 2>&1
+          printf '%s' "$REPORT_CERT_BASE64" | base64 -d > "$private/report.crt"
+          # No fixture-input private key is inherited by the state sealer.
+          RUNNER_TEMP="$private" /usr/bin/timeout --signal=TERM --kill-after=30s 1200 \
+            /usr/bin/python3 -I -B "$private/source/tools/round2/windows11_hosted.py" seal-state \
+            --work "$private/w11" --output "$private/state" --certificate "$private/report.crt" \
+            --receipt "$private/report/windows11-state.json"
+      - name: Encrypt private report and early failures
         if: always()
         shell: bash
         run: |
-          # Fixtures deliberately leave read-only trees. Cleanup errors must
-          # never print their private paths into public Actions logs.
-          exec >"$RUNNER_TEMP/fixture-cleanup.log" 2>&1
+          set +x
+          set -euo pipefail
+          umask 077
           private="$CYPAT_PRIVATE_ROOT"
-          if [[ -d $private ]]; then chmod -R u+rwX -- "$private"; fi
-          rm -rf -- "$private" "$RUNNER_TEMP/result.cms" "$RUNNER_TEMP/report-sealing.log"
+          exec >"$RUNNER_TEMP/r2w-report-sealing.log" 2>&1
+          printf '%s' "$REPORT_CERT_BASE64" | base64 -d > "$private/report.crt"
+          # Guest state has its own explicit inventory/chunk bounds. This is the
+          # existing small report transport, including original build diagnostics.
+          timeout --signal=TERM --kill-after=30s 600 tar -C "$private" -I 'zstd -T2 -3' \
+            -cf "$private/result.tar.zst" report
+          [[ $(stat -c %s -- "$private/result.tar.zst") -le 1073741824 ]]
+          openssl cms -encrypt -binary -aes-256-gcm -outform DER -in "$private/result.tar.zst" \
+            -out "$private/result.cms.partial" "$private/report.crt"
+          mv -- "$private/result.cms.partial" "$private/result.cms"
+      - name: Upload encrypted CORE report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-report${{ matrix.suffix }}-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/result.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+      # Publish the small diagnostic report before the potentially large state
+      # transfer. Complete acceptance still requires the authenticated state.
+      - name: Upload encrypted stopped state
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1' && env.CYPAT_WIN11_STATE_EXPORT == '1'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-round2-win11-state${{ matrix.suffix }}-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/state/*.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+      - name: Discard report-only throwaway guest after report publication
+        if: always() && env.CYPAT_WIN11_SOURCE_ADMITTED == '1' && env.CYPAT_WIN11_STATE_EXPORT == '0'
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set +x
+          set -euo pipefail
+          private="$CYPAT_PRIVATE_ROOT"
+          exec >"$RUNNER_TEMP/r2w-discard-state.log" 2>&1
+          RUNNER_TEMP="$private" /usr/bin/timeout --signal=TERM --kill-after=10s 150 \
+            /usr/bin/python3 -I -B "$private/source/tools/round2/windows11_hosted.py" discard-state \
+            --work "$private/w11"
+      - name: Remove source access key
+        if: always()
+        shell: bash
+        run: |
+          set +x
+          exec >"$RUNNER_TEMP/r2w-secret-cleanup.log" 2>&1
+          rm -f -- "$CYPAT_PRIVATE_ROOT/key" "$CYPAT_PRIVATE_ROOT/fixture-input.pem"
+          # Full export keeps failed state until the disposable runner is destroyed.
+          # Successful encryption/upload is judged by the exact workflow attempt.
 
