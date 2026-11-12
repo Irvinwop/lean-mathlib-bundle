@@ -1,5 +1,5 @@
 name: Automated checks
-run-name: Round2 build, Windows launch and disposable Server2022 core round2-build 20261112T134749Z-8367f2cd7c7f
+run-name: Round2 build, Windows launch and disposable Server2022 core round2-build 20261112T140024Z-12b7925931b9
 on:
   push:
     branches: [automation]
@@ -19,7 +19,7 @@ jobs:
         include: [{"bundle_scope":"","stock_bootstrap":false,"apply_first":false,"windows_parent_cache":"","lane":"round2","target":"round2-build","name":"Round2 compile, parser and transport (no hardening E2E)","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":60}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '47aab16367e286ea192bbf2e3fe4074eeeb3b3ae'
+      SOURCE_COMMIT: '00744d72a007172fe6283b8c51eeec4cfa638a4c'
       TARGET: '${{ matrix.target }}'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
@@ -164,8 +164,8 @@ jobs:
     timeout-minutes: 20
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '47aab16367e286ea192bbf2e3fe4074eeeb3b3ae'
-      QUEUED_SOURCE_SHA256: '60f78201c0b770fbdcba764fb830254359cbfbefafad9f4d266ae6e560c17af9'
+      SOURCE_COMMIT: '00744d72a007172fe6283b8c51eeec4cfa638a4c'
+      QUEUED_SOURCE_SHA256: '8cf19c0db846f6637f1413a978e5fabda7aafd90d9d828d0d35cb00027102c47'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       INPUT_SHA256: ${{ needs.checks.outputs.round2_input_sha256 }}
     steps:
@@ -263,6 +263,95 @@ jobs:
             & "$private/source/tools/round2/windows-smoke.ps1" -PrivateRoot $private *> "$private/report/stage.log"
             exit ([int][IO.File]::ReadAllText("$private/report/exit-code"))
           } catch { $_ | Out-File -LiteralPath "$private/report/stage-error.log"; exit 2 }
+      - name: A028 and A029 targeted native Server 2022 unit regressions
+        if: ${{ !cancelled() }}
+        timeout-minutes: 13
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop';$private=$env:CYPAT_PRIVATE_ROOT
+          if(-not $private -or -not [IO.File]::Exists("$private/source-admitted") -or
+              -not [IO.File]::Exists("$private/input/input-manifest.json")){throw 'Require admitted private source and authenticated input'}
+          $source="$private/source";$report="$private/report"
+          $receipt=Get-Content -LiteralPath "$report/receipt.json" -Raw|ConvertFrom-Json
+          $unit=[ordered]@{status='incomplete';scope='A028 native NetSecurity and A029 temporary NTFS DACL units only'
+            source_sha256=$env:QUEUED_SOURCE_SHA256;source_commit=$env:SOURCE_COMMIT
+            action_id=$env:GITHUB_RUN_ID;run_attempt=$env:GITHUB_RUN_ATTEMPT;job=$env:GITHUB_JOB
+            host_hardening_executed=$false;full_guest_apply_verified=$false;cases=@()}
+          $receipt|Add-Member -NotePropertyName targeted_units -NotePropertyValue $unit -Force
+          try {
+            if($env:ImageOS -cne 'win22' -or $env:RUNNER_ENVIRONMENT -cne 'github-hosted' -or
+                $env:GITHUB_JOB -cne 'round2_windows'){throw 'Require the existing hosted windows-2022 smoke job'}
+            $os=Get-CimInstance Win32_OperatingSystem -ErrorAction Stop
+            if($os.BuildNumber -cne '20348' -or $os.ProductType -ne 3 -or
+                $os.Caption -notmatch 'Windows Server 2022'){throw 'Actual OS is not Server 2022'}
+            $unit.os=@{caption=$os.Caption;version=$os.Version;build=$os.BuildNumber;product_type=$os.ProductType}
+            $desktop=Join-Path $env:WINDIR 'System32/WindowsPowerShell/v1.0/powershell.exe'
+            $required=@{
+              'tests/Test-Round2IisFirewallDynamicTransport.Native.ps1'='d9c9998555d59a527c267509a15be65fbf19cd024c0e397b97482d8cb5889b20'
+              'tests/Test-Round2HandbookParentAcl.Native.ps1'='c32502689bf6f0baef2a4334c3efbff244e47062ffc8ee4a65f2742147e184c5'
+              'tests/fixtures/round2-a028-a029/RequiredWorkflows.base.ps1'='28058b32fb703f7eb51895914c896163a85ae4d882044161180ee4c8610ceb40'
+              'round2/windows/RequiredWorkflows.ps1'='98d1f9bc53b1e6420f93ad5521bfd79fc013e973ef26c02a0a77c74dcfcae1f0'
+              'mvp/Harden-Windows.ps1'=$null;'scripts/ImagePolicy.ps1'=$null;'scripts/image-policy.json'=$null
+            }
+            $manifest=[IO.File]::ReadAllLines("$source/CI-SOURCE.SHA256SUMS");$pins=@{}
+            foreach($name in $required.Keys){
+              $rows=@($manifest|Where-Object {$_ -cmatch ('\A[a-f0-9]{64}  '+[regex]::Escape($name)+'\z')})
+              if($rows.Count -ne 1){throw 'Unit dependency is not in the exact queued source manifest'}
+              $pin=(Get-FileHash -LiteralPath "$source/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
+              if($pin -cne $rows[0].Substring(0,64) -or ($required[$name] -and $pin -cne $required[$name])){throw 'Reviewed unit source bytes differ'}
+              $pins[$name]=$pin
+            }
+            $unit.sources=$pins
+            $base="$private/unit-base"
+            if(Test-Path -LiteralPath $base){throw 'Preserve an existing baseline root'}
+            New-Item -ItemType Directory -Path "$base/round2/windows","$base/mvp","$base/scripts"|Out-Null
+            Copy-Item -LiteralPath "$source/tests/fixtures/round2-a028-a029/RequiredWorkflows.base.ps1" -Destination "$base/round2/windows/RequiredWorkflows.ps1"
+            foreach($name in @('mvp/Harden-Windows.ps1','scripts/ImagePolicy.ps1','scripts/image-policy.json')){
+              Copy-Item -LiteralPath "$source/$name" -Destination "$base/$name"
+            }
+            foreach($case in @(
+                @{id='a028-base';test='Test-Round2IisFirewallDynamicTransport.Native.ps1';repo=$base;code=1;marker='FAIL A028: Coverage mismatch: restricted-only';count=2;cleanup='CLEANUP owned rules absent from PersistentStore and ActiveStore'},
+                @{id='a029-base';test='Test-Round2HandbookParentAcl.Native.ps1';repo=$base;code=1;marker='FAIL A029: inherit-only: expected refusal=False; actual refusal=True';count=1;cleanup='CLEANUP owned temporary directories absent'},
+                @{id='a028-current';test='Test-Round2IisFirewallDynamicTransport.Native.ps1';repo=$source;code=0;marker='PASS A028 native production IIS firewall coverage (7 cases)';count=7;cleanup='CLEANUP owned rules absent from PersistentStore and ActiveStore'},
+                @{id='a029-current';test='Test-Round2HandbookParentAcl.Native.ps1';repo=$source;code=0;marker='PASS A029 native production parent ACL classifier (8 cases)';count=8;cleanup='CLEANUP owned temporary directories absent'})){
+              $observation=[ordered]@{id=$case.id;status='incomplete';expected_exit=$case.code;test=$case.test}
+              $unit.cases+=,$observation
+              $start=[Diagnostics.ProcessStartInfo]::new($desktop);$start.UseShellExecute=$false;$start.CreateNoWindow=$true
+              $start.RedirectStandardInput=$true;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
+              foreach($arg in @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',"$source/tests/$($case.test)",'-Repo',$case.repo)){$start.ArgumentList.Add($arg)}
+              $child=[Diagnostics.Process]::new();$child.StartInfo=$start
+              try {
+                if(-not $child.Start()){throw 'Original native unit did not start'}
+                $observation.pid=$child.Id;$child.StandardInput.Close()
+                $outTask=$child.StandardOutput.ReadToEndAsync();$errTask=$child.StandardError.ReadToEndAsync()
+                if(-not $child.WaitForExit(180000)){throw 'Original native unit exceeded 180 seconds; no result claimed'}
+                if(-not [Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($outTask,$errTask),10000)){throw 'Unit output capture incomplete'}
+                $stdout=$outTask.Result;$stderr=$errTask.Result;$observation.exit_code=$child.ExitCode
+                if([Text.Encoding]::UTF8.GetByteCount($stdout+$stderr) -gt 64KB){throw 'Unit output exceeded evidence bound'}
+                [IO.File]::AppendAllText("$report/stage.log",("`nTARGETED UNIT "+$case.id+" exit="+$child.ExitCode+"`nSTDOUT`n"+$stdout+"`nSTDERR`n"+$stderr))
+                $lines=@(($stdout+$stderr) -split '\r?\n');$checks=@($lines|Where-Object {$_ -cmatch '^CHECK '}).Count
+                if($child.ExitCode -ne $case.code -or $case.marker -cnotin $lines -or
+                    $case.cleanup -cnotin $lines -or $checks -ne $case.count){throw ('Original native unit did not establish expected behavior: '+$case.id)}
+                if($case.id -like 'a028-*' -and @($lines|Where-Object {$_ -cmatch '^NATIVE index=[012] DynamicTransport=[0-9]+$'}).Count -ne 3){throw 'Missing native DynamicTransport observations'}
+                if($case.code -eq 0 -and $stderr.Length){throw 'Passing native unit wrote stderr'}
+                $observation.status='passed';$observation.checks=$checks;$observation.cleanup_verified=$true
+              } catch {
+                $observation.status='failed';$observation.failure=$_.Exception.Message
+              } finally {
+                if($observation.Contains('pid') -and -not $child.HasExited){$child.Kill($true);$null=$child.WaitForExit(10000)}
+                $child.Dispose()
+              }
+            }
+            if(@($unit.cases|Where-Object {$_.status -cne 'passed'}).Count){throw 'One or more original native units failed or were inconclusive'}
+            $unit.status='passed'
+          } catch {
+            $unit.status='failed';$unit.failure=$_.Exception.Message
+            $receipt.status='failed';[IO.File]::WriteAllText("$report/exit-code",'1')
+            [IO.File]::AppendAllText("$report/stage.log",("`nTARGETED UNIT FAILURE: "+$unit.failure+"`n"))
+            throw 'Targeted native unit regressions failed; inspect the encrypted report'
+          } finally {
+            [IO.File]::WriteAllText("$report/receipt.json",($receipt|ConvertTo-Json -Depth 16),[Text.UTF8Encoding]::new($false))
+          }
       - name: Seal native launch streams and failures privately
         if: always()
         shell: pwsh
@@ -321,8 +410,8 @@ jobs:
             suffix: '-direct-apply'
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '47aab16367e286ea192bbf2e3fe4074eeeb3b3ae'
-      QUEUED_SOURCE_SHA256: '60f78201c0b770fbdcba764fb830254359cbfbefafad9f4d266ae6e560c17af9'
+      SOURCE_COMMIT: '00744d72a007172fe6283b8c51eeec4cfa638a4c'
+      QUEUED_SOURCE_SHA256: '8cf19c0db846f6637f1413a978e5fabda7aafd90d9d828d0d35cb00027102c47'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       INPUT_SHA256: ${{ needs.checks.outputs.round2_input_sha256 }}
       BUILD_RESULT: ${{ needs.checks.result }}
