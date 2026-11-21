@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Extended one-click Debian score round2-score-debian-full 20261121T100547Z-3da0e77091fa
+run-name: Extended one-click Server score round2-score-server-full 20261121T100813Z-2f023f03a3e3
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"mint_witness":false,"mint_reviewed":false}]
+        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":1800,"minutes":55,"mint_witness":false,"mint_reviewed":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'c7f6623209893ae118f3fe598ab224cd8cfdf28b'
-      QUEUED_SOURCE_SHA256: '7ac7904e756966542413ae0a9fa24c5055b385a750a6151d59fa38ac0afb7918'
+      SOURCE_COMMIT: '99814f6346b83790ac36b5fe040daf2ac1ff939d'
+      QUEUED_SOURCE_SHA256: '95bd998d34bf39f09316067334d361bb1dbd995c9e6fae045d1699a8e661df2a'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
