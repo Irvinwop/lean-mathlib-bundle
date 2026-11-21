@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock one-confirmation quarantine witness round2-score 20261121T195635Z-d21830c4cb6c
+run-name: FreeBSD stock catalog recovery (offline) round2-score 20261121T200758Z-5d7c9dee93dc
 on:
   push:
     branches: [automation]
@@ -8,28 +8,30 @@ permissions:
   contents: read
 jobs:
   score_harness:
-    name: Score ${{ matrix.os }} ${{ matrix.variant }}
+    name: ${{ matrix.server_iis_seed_only && 'Verify Server alternate IIS fixture' || format('Score {0} {1}', matrix.os, matrix.variant) }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: ${{ matrix.minutes }}
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","freebsd_quarantine":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '91989af4302d9b88a13f24177023f1de54a38258'
-      QUEUED_SOURCE_SHA256: '9fae02be37fe2d0926f94e395cc8b52b2134781ef52bca5bba5902c9a8552ca3'
+      SOURCE_COMMIT: 'a0f3de23936fad7f85a3478a9719aa69a5b21e65'
+      QUEUED_SOURCE_SHA256: 'f6a3a9ff80ba0e3fe8414a42202a324fb9f3f6c984ed8c7a7bb060b44c2ec490'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
       CYPAT_SCORE_DEBIAN_ROSTER: ${{ matrix.debian_roster && '1' || '0' }}
       CYPAT_SCORE_SERVER_ROSTER: ${{ matrix.server_roster && '1' || '0' }}
+      CYPAT_SCORE_SERVER_IIS_SEED_ONLY: ${{ matrix.server_iis_seed_only && '1' || '0' }}
       CYPAT_SCORE_MINT_WITNESS: ${{ matrix.mint_witness && '1' || '0' }}
       CYPAT_SCORE_MINT_ROSTER: ${{ matrix.mint_roster && '1' || '0' }}
       CYPAT_SCORE_MINT_REVIEWED: ${{ matrix.mint_reviewed && '1' || '0' }}
       CYPAT_SCORE_FREEBSD_QUARANTINE: ${{ matrix.freebsd_quarantine && '1' || '0' }}
       CYPAT_SCORE_FREEBSD_ROSTER: ${{ matrix.freebsd_roster && '1' || '0' }}
       CYPAT_SCORE_FREEBSD_FILESYSTEMS: ${{ matrix.freebsd_filesystems && '1' || '0' }}
+      CYPAT_SCORE_FREEBSD_CATALOG: ${{ matrix.freebsd_catalog }}
     steps:
       - name: Check out the pinned private source
         env:
@@ -58,6 +60,7 @@ jobs:
           test "$(cat source/CI-SOURCE.sha256)" = "$QUEUED_SOURCE_SHA256"
           (cd source; sha256sum --quiet --strict -c CI-SOURCE.SHA256SUMS)
       - name: Verify the exact encrypted artifact
+        if: matrix.server_iis_seed_only == false
         env:
           FIXTURE_INPUT_KEY: ${{ secrets.FIXTURE_INPUT_KEY }}
         shell: bash
@@ -81,8 +84,10 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
+          $arguments=@{}
+          if($env:CYPAT_SCORE_SERVER_IIS_SEED_ONLY -ceq '1'){$arguments.IisSeedOnly=$true}
           try {
-            & (Join-Path $env:CYPAT_SCORE_ROOT 'source/tools/round2/scoring/run-server.ps1') *> (Join-Path $env:CYPAT_SCORE_ROOT 'fixture.log')
+            & (Join-Path $env:CYPAT_SCORE_ROOT 'source/tools/round2/scoring/run-server.ps1') @arguments *> (Join-Path $env:CYPAT_SCORE_ROOT 'fixture.log')
           } catch {
             $phase=Join-Path $env:CYPAT_SCORE_ROOT 'server-phase'
             if(Test-Path -LiteralPath $phase){
@@ -104,7 +109,9 @@ jobs:
           root=${CYPAT_SCORE_ROOT:-$RUNNER_TEMP/cypat-score-unverified}
           mkdir -p "$root"
           if [[ -f $root/source/tools/round2/scoring/result.py ]]; then
-            python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT"
+            options=()
+            if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
+            python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
           else
             printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
               "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" > "$root/score.json"
