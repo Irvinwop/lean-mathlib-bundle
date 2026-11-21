@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Easy-point score from unchanged Round2 releases round2-score-baseline 20261121T050105Z-a12fcf039a55
+run-name: Easy-point score from unchanged Round2 releases round2-score-baseline 20261121T050531Z-55183c852a6b
 on:
   push:
     branches: [automation]
@@ -17,8 +17,8 @@ jobs:
         include: [{"os":"debian12","variant":"final-bc","runner":"ubuntu-24.04","seconds":1800,"minutes":55}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '9ebc994c101852a8a522b33c45f78579ab9f809f'
-      QUEUED_SOURCE_SHA256: '1fda5d8204033a61f186ee1324791ee3d898f43ee08471fa0f10cc8d690ca0c4'
+      SOURCE_COMMIT: 'b09d9044a64a57ba4a9f0e83ef8b0a4f7f04e397'
+      QUEUED_SOURCE_SHA256: 'c84510fcd70fc7972481b3488acc9b25d3b99d0fbb43f0eee3a4f948c93d4076'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -64,7 +64,10 @@ jobs:
         shell: bash
         run: |
           cd "$CYPAT_SCORE_ROOT"
-          bash source/tools/round2/scoring/run-container.sh >fixture.log 2>&1
+          status=0
+          bash source/tools/round2/scoring/run-container.sh >fixture.log 2>&1 || status=$?
+          if [[ -f legacy-status.log ]]; then grep '^legacy-debian:' legacy-status.log | cut -c1-200 || true; fi
+          exit "$status"
       - name: Seed and score on the standalone Windows Server runner
         if: matrix.os == 'server2022'
         shell: powershell
@@ -81,6 +84,7 @@ jobs:
           mkdir score-guest
           install -m 0700 "$target" score-guest/candidate
           install -m 0700 "$root/source/tools/round2/scoring/"{run-freebsd,freebsd}.sh score-guest/
+          install -m 0600 "$root/source/tools/round2/scoring/freebsd-pty.c" score-guest/
       - name: Seed and score inside FreeBSD 15.1
         if: matrix.os == 'freebsd'
         uses: vmactions/freebsd-vm@811efaaac0668df8bfb8308c3ec997b5ab50037b
