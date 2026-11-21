@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click Debian score with a different README roster and ports round2-score-debian-roster 20261121T162822Z-9fb0be1a8466
+run-name: Extended one-click Debian score round2-score-debian-full 20261121T162832Z-538612601053
 on:
   push:
     branches: [automation]
@@ -14,10 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":true,"freebsd_quarantine":false,"freebsd_roster":false}]
+        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"freebsd_quarantine":false,"freebsd_roster":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'acfe67bbb0bfe317cfb3420be3cdda17aabb8df7'
+      SOURCE_COMMIT: '5b50ef206a0a55c99a9fb92ac9489b406310843d'
       QUEUED_SOURCE_SHA256: 'f191c459842eb68a3cc9cd8710414128452e8d8fb4bb06c066b1f8a4966a8630'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
