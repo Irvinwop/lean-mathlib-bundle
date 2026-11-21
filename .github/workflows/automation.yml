@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock score with alternate accounts and services round2-score 20261121T201714Z-102014203bc7
+run-name: Hosted Server alternate IIS fixture only round2-score-server-iis-seed 20261121T202039Z-3ee6ea3d388a
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","freebsd_roster":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_filesystems":false}]
+        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":2160,"minutes":10,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":true,"server_iis_seed_only":true,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'a35351cd023c1114964c0feb87b746d7acbe7e57'
-      QUEUED_SOURCE_SHA256: '23b53680ede3b100340051cacafc91c406f07e4451b39fd0b3dd4807d1088f0e'
+      SOURCE_COMMIT: '2083bcaa19087b94d5ea9ea92c834f257857985b'
+      QUEUED_SOURCE_SHA256: '461ef696679b2e3651445a4a32bc48ff2d26c0fcd3e0f6b07c22411aca05e32f'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
