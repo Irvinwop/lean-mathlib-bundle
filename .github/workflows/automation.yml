@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Extended one-click Server score round2-score-server-full 20261121T131614Z-7c979f0d0935
+run-name: Mint workspace and SSH native witness round2-score-mint-witness 20261121T131901Z-b04469581695
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":1800,"minutes":55,"mint_witness":false,"mint_reviewed":false}]
+        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":900,"minutes":22,"mint_witness":true,"mint_reviewed":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '862987805aab81670522424db3c082ef442a6fa4'
-      QUEUED_SOURCE_SHA256: '5fad485664cfaff2b53b888935bf737e57fd5b80c352b54e85bdad8d74785702'
+      SOURCE_COMMIT: 'd2b35cd410542275867c2d6e9f28a6901c623e4d'
+      QUEUED_SOURCE_SHA256: 'b5b35f9ce1e026dc68ff59f8eac614c19927983f13346ee515b1be2578d827b0'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
