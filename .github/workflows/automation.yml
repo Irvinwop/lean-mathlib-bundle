@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click Debian score with a different README roster and ports round2-score-debian-roster 20261121T152903Z-5b597ce9d304
+run-name: Easy-point score from one-click candidates round2-score 20261121T152948Z-9a6cd47fac03
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"mint_witness":false,"mint_reviewed":false,"debian_roster":true}]
+        include: [{"os":"freebsd","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"debian_roster":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'cf3a77d6c465c8d803bf3f85d3a341909faf0627'
-      QUEUED_SOURCE_SHA256: '47a2e30f54945238d621c95b18775cf322b1394e8882a6c2338f784164c3f071'
+      SOURCE_COMMIT: '232ff7a16765011d77c93ef3846423cd8364ed05'
+      QUEUED_SOURCE_SHA256: '90dcc6608b6dea4ad25eb3d6d2f15e7399d6f00b71d2c5fe731eb01246f21e7b'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -86,32 +86,11 @@ jobs:
             }
             throw ('Windows fixture stopped at controller line '+[string]$_.InvocationInfo.ScriptLineNumber)
           }
-      - name: Stage FreeBSD scorer and artifact for the ephemeral VM
+      - name: Seed and score on the signed stock FreeBSD 15.1 image
         if: matrix.os == 'freebsd'
         shell: bash
         run: |
-          set -euo pipefail
-          root=$CYPAT_SCORE_ROOT
-          target=$(jq -er '.artifacts[] | select(.id=="candidate") | .path' "$root/input.json")
-          mkdir score-guest
-          install -m 0700 "$target" score-guest/candidate
-          install -m 0700 "$root/source/tools/round2/scoring/"{run-freebsd,freebsd}.sh score-guest/
-          install -m 0600 "$root/source/tools/round2/scoring/freebsd-pty.c" score-guest/
-      - name: Seed and score inside FreeBSD 15.1
-        if: matrix.os == 'freebsd'
-        uses: vmactions/freebsd-vm@811efaaac0668df8bfb8308c3ec997b5ab50037b
-        with:
-          release: '15.1'
-          sync: tar
-          sync-time: 'false'
-          copyback: 'true'
-          envs: CYPAT_SCORE_SECONDS
-          run: |
-            cd score-guest
-            umask 077
-            CYPAT_SCORE_FREEBSD_HOSTED=1 sh run-freebsd.sh > fixture.log 2>&1 || true
-            grep -E '^CYPAT_FREEBSD_HOSTED_LAUNCH=(release-mismatch|rescue-digest-mismatch|embedded-cache-refused|embedded-source-refused|staging-root-refused|unclassified)$' fixture.log || true
-            rm -f fixture.log candidate
+          bash "$CYPAT_SCORE_ROOT/source/tools/round2/scoring/run-freebsd-stock.sh"
       - name: Publish the score only
         if: always() && !cancelled()
         shell: bash
@@ -119,11 +98,6 @@ jobs:
           set -euo pipefail
           root=${CYPAT_SCORE_ROOT:-$RUNNER_TEMP/cypat-score-unverified}
           mkdir -p "$root"
-          if [[ $CYPAT_SCORE_OS == freebsd && -d score-guest ]]; then
-            for name in apply-exit before.json after.json freebsd-fixture-phase; do
-              if [[ -f score-guest/$name ]]; then cp "score-guest/$name" "$root/$name"; fi
-            done
-          fi
           if [[ -f $root/source/tools/round2/scoring/result.py ]]; then
             python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT"
           else
