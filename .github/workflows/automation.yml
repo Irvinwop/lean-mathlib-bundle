@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Reviewed Mint roster and package cleanup round2-score-mint-reviewed 20261121T083125Z-b0b4e500fa6e
+run-name: Easy-point score from one-click candidates round2-score 20261121T083300Z-e84267741ae8
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":600,"minutes":18,"mint_witness":false,"mint_reviewed":true}]
+        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '45b1764d0314861c57fe3e6f3b3806ec35e62268'
-      QUEUED_SOURCE_SHA256: '69ad10b6a2cd5c9f89f0e63c0da448cc72e91cc0a29267b1d5083f8596e79f46'
+      SOURCE_COMMIT: '5025c02a0da3772fc61e1e1a878bf8b157bf29d9'
+      QUEUED_SOURCE_SHA256: '95a04cd0427a7a0cc939d444b34223effe0d46d465e6d88b770b0a2f0fa2c340'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
