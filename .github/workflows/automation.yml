@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Mint workspace and SSH native witness round2-score-mint-witness 20261121T152532Z-fd6cda0b061c
+run-name: Easy-point score from one-click candidates round2-score 20261121T152622Z-45a9db305953
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":900,"minutes":22,"mint_witness":true,"mint_reviewed":false,"debian_roster":false}]
+        include: [{"os":"freebsd","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"debian_roster":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '23f43b876d78c585c7207ba97d4baa12e63b7996'
-      QUEUED_SOURCE_SHA256: 'b34f94733fda08d0834f62023750191ec46e7639d6f6f5fdaa9e6608e9a20042'
+      SOURCE_COMMIT: '590a41113bceeaa7554eb04cbabbc7986550b7be'
+      QUEUED_SOURCE_SHA256: 'd1355cfb39b0ac351f0e88402eedb838b4ed96f394ef7776aa6404d8d3750972'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -110,6 +110,7 @@ jobs:
             cd score-guest
             umask 077
             CYPAT_SCORE_FREEBSD_HOSTED=1 sh run-freebsd.sh > fixture.log 2>&1 || true
+            grep -E '^CYPAT_FREEBSD_HOSTED_LAUNCH=(release-mismatch|rescue-digest-mismatch|embedded-cache-refused|embedded-source-refused|staging-root-refused|unclassified)$' fixture.log || true
             rm -f fixture.log candidate
       - name: Publish the score only
         if: always() && !cancelled()
