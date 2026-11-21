@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock one-confirmation quarantine witness round2-score 20261121T174219Z-c3e7766f7f97
+run-name: FreeBSD stock one-confirmation quarantine witness round2-score 20261121T174255Z-2febe731fd14
 on:
   push:
     branches: [automation]
@@ -17,8 +17,8 @@ jobs:
         include: [{"os":"freebsd","variant":"candidate","freebsd_quarantine":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '62f4fd5e3340bf184308cf469210434d73b78ea9'
-      QUEUED_SOURCE_SHA256: '0a5b8add6f2f19095abc78f651fbce19b84d011dda2a17200640287425261f13'
+      SOURCE_COMMIT: '66c402b6f2a9d74981447cdf5076af266b955634'
+      QUEUED_SOURCE_SHA256: '816527b64fb0a42111ea2189fbbe9d0bdc9a62da758da8b86d15e01ac23d3b18'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
