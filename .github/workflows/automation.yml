@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click Server score with an alternate README and IIS port round2-score-server-roster 20261121T185033Z-1b77ac841015
+run-name: FreeBSD stock one-confirmation quarantine witness round2-score 20261121T185209Z-f53eea8c01b4
 on:
   push:
     branches: [automation]
@@ -8,23 +8,22 @@ permissions:
   contents: read
 jobs:
   score_harness:
-    name: ${{ matrix.server_iis_seed_only && 'Verify Server alternate IIS fixture' || format('Score {0} {1}', matrix.os, matrix.variant) }}
+    name: Score ${{ matrix.os }} ${{ matrix.variant }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: ${{ matrix.minutes }}
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":2160,"minutes":55,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":true,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_quarantine":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'b1471a6c5e3aad5ceec4ca24691c499db3183895'
-      QUEUED_SOURCE_SHA256: 'd75c8da87b1f9ab9aa50ae795926b50e2cc5226cbd2d86ec51e9838bb408dad5'
+      SOURCE_COMMIT: '4c993a910d3cdf6e752d90105bbb57a0fc5a104c'
+      QUEUED_SOURCE_SHA256: '3cf52e24027fa69eb3b875abc45722fe9ff18079b1db3df29deeb13441690a91'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
       CYPAT_SCORE_DEBIAN_ROSTER: ${{ matrix.debian_roster && '1' || '0' }}
       CYPAT_SCORE_SERVER_ROSTER: ${{ matrix.server_roster && '1' || '0' }}
-      CYPAT_SCORE_SERVER_IIS_SEED_ONLY: ${{ matrix.server_iis_seed_only && '1' || '0' }}
       CYPAT_SCORE_MINT_WITNESS: ${{ matrix.mint_witness && '1' || '0' }}
       CYPAT_SCORE_MINT_ROSTER: ${{ matrix.mint_roster && '1' || '0' }}
       CYPAT_SCORE_MINT_REVIEWED: ${{ matrix.mint_reviewed && '1' || '0' }}
@@ -59,7 +58,6 @@ jobs:
           test "$(cat source/CI-SOURCE.sha256)" = "$QUEUED_SOURCE_SHA256"
           (cd source; sha256sum --quiet --strict -c CI-SOURCE.SHA256SUMS)
       - name: Verify the exact encrypted artifact
-        if: matrix.server_iis_seed_only == false
         env:
           FIXTURE_INPUT_KEY: ${{ secrets.FIXTURE_INPUT_KEY }}
         shell: bash
@@ -83,10 +81,8 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $arguments=@{}
-          if($env:CYPAT_SCORE_SERVER_IIS_SEED_ONLY -ceq '1'){$arguments.IisSeedOnly=$true}
           try {
-            & (Join-Path $env:CYPAT_SCORE_ROOT 'source/tools/round2/scoring/run-server.ps1') @arguments *> (Join-Path $env:CYPAT_SCORE_ROOT 'fixture.log')
+            & (Join-Path $env:CYPAT_SCORE_ROOT 'source/tools/round2/scoring/run-server.ps1') *> (Join-Path $env:CYPAT_SCORE_ROOT 'fixture.log')
           } catch {
             $phase=Join-Path $env:CYPAT_SCORE_ROOT 'server-phase'
             if(Test-Path -LiteralPath $phase){
@@ -108,9 +104,7 @@ jobs:
           root=${CYPAT_SCORE_ROOT:-$RUNNER_TEMP/cypat-score-unverified}
           mkdir -p "$root"
           if [[ -f $root/source/tools/round2/scoring/result.py ]]; then
-            options=()
-            if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
-            python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
+            python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT"
           else
             printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
               "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" > "$root/score.json"
