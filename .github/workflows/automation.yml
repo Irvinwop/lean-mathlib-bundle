@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click Mint score with a different Desktop README roster and ports round2-score-mint-roster 20261121T220946Z-e7c1d2d243a1
+run-name: Extended one-click Debian score round2-score-debian-full 20261121T220959Z-10f4cfbfe811
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '7fb9c55cad67df01c0e9327a9e50bde4fe5e1432'
-      QUEUED_SOURCE_SHA256: 'd5fc922e88e30c38b961faf1b34cf8503c9942926c1e36680ec6945afc4dcc39'
+      SOURCE_COMMIT: 'ab0026efb1306c61f1aa61cc9937486a5cad508c'
+      QUEUED_SOURCE_SHA256: '46741eeadcdfa8251cd5c25c0ac7507669cb92370daf6b4d4ad66fffecaa5c9b'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
