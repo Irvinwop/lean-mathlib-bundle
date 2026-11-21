@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Easy-point score from one-click candidates round2-score 20261121T052245Z-673ef24d99a1
+run-name: Easy-point score from one-click candidates round2-score 20261121T052439Z-8b93ac75b554
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":420,"minutes":18}]
+        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'a6a14a644a8d46f9aff2a95f03f75daa09a4aa46'
-      QUEUED_SOURCE_SHA256: '00bbfee73a9879ec92b40c44b07453332b1fb0a6c7ff6133ff55a61f8fcaeec2'
+      SOURCE_COMMIT: 'cad27bf6f208236635d157856779ddd0e784372e'
+      QUEUED_SOURCE_SHA256: 'f988494964dd0ce5321435fa326d74f1355eaebbe8906fa63015d313fc15a186'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -116,7 +116,7 @@ jobs:
           root=${CYPAT_SCORE_ROOT:-$RUNNER_TEMP/cypat-score-unverified}
           mkdir -p "$root"
           if [[ $CYPAT_SCORE_OS == freebsd && -d score-guest ]]; then
-            for name in apply-exit before.json after.json; do
+            for name in apply-exit before.json after.json freebsd-fixture-phase; do
               if [[ -f score-guest/$name ]]; then cp "score-guest/$name" "$root/$name"; fi
             done
           fi
