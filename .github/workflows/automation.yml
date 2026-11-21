@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Easy-point score from one-click candidates round2-score 20261121T053323Z-23c54d33295d
+run-name: Easy-point score from one-click candidates round2-score 20261121T053436Z-962d6cf3955a
 on:
   push:
     branches: [automation]
@@ -14,10 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":420,"minutes":18}]
+        include: [{"os":"freebsd","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'a21d8ccc94604c3eaaa5186c07e5fa9ebe993c1c'
+      SOURCE_COMMIT: '7b3580a61f0fd85c83a0e4eeddb08e91c7495429'
       QUEUED_SOURCE_SHA256: '35cb2eb6cdf74682793b0ca14ca5deda2855c9e69f08d3d9d3c110a8078bf387'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
