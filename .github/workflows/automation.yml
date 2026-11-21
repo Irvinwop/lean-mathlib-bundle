@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Mint workspace and SSH native witness round2-score-mint-witness 20261121T165828Z-f86e6cde6a5e
+run-name: One-click Mint score with a different Desktop README roster and ports round2-score-mint-roster 20261121T165838Z-a999ffb483b5
 on:
   push:
     branches: [automation]
@@ -14,10 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":900,"minutes":22,"mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"freebsd_quarantine":false,"freebsd_roster":false}]
+        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":900,"minutes":22,"mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"freebsd_quarantine":false,"freebsd_roster":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '70eff75a775c311a339157c7527e9fa272059187'
+      SOURCE_COMMIT: 'c69dce8215926ee4b63fb5ce8e9c76e173090b86'
       QUEUED_SOURCE_SHA256: '3a6a70577c023b144c695bc4d2c577f0eb1ac227379aa79a3b01b0f22161a0e6'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
