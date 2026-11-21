@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Easy-point score from one-click candidates round2-score 20261121T165503Z-39648ada3451
+run-name: FreeBSD stock score with alternate accounts and services round2-score 20261121T165512Z-24f54da839f1
 on:
   push:
     branches: [automation]
@@ -14,10 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"freebsd_quarantine":false,"freebsd_roster":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_roster":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"freebsd_quarantine":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'e5780e625699b8e5890489f39f88506fd6e46198'
+      SOURCE_COMMIT: '6b89ef0fad5c27fc4dbc0c9564aecb8babff9596'
       QUEUED_SOURCE_SHA256: 'eb2f6c2745f853e346e5c646d61ba6c3ff72ab6a06466e0c190b77c498042ddf'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
