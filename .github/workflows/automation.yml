@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Easy-point score from one-click candidates round2-score 20261121T064500Z-141ac13dfa72
+run-name: Extended one-click Server score round2-score-server-full 20261121T065444Z-2ae1ffe48227
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":420,"minutes":18}]
+        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":1800,"minutes":55}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '79fcc8bd29d05d44e6f72a02c84fc0de5a04288a'
-      QUEUED_SOURCE_SHA256: '33d580d5336ffee50404a4f6feb7ecbc7469acd9581d382e8bf2c742b74d921c'
+      SOURCE_COMMIT: '9cbeca58640b31de94cbbb5b9cbe39c9376a06e4'
+      QUEUED_SOURCE_SHA256: '27b508df777f10eea074c769c7db867ce128dfb21685b8dedae8ed502fd033bb'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
