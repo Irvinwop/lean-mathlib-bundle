@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261122T163005Z-1cb82fd30080
+run-name: One-click score with both README rosters round2-score-rosters 20261122T163024Z-bc98bddc8dcd
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"debian12","variant":"candidate","fixture":"original","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"artifact_key":"debian12-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"debian12","variant":"candidate","fixture":"alternate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"artifact_key":"debian12-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":true,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"mint","variant":"candidate","fixture":"original","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-original","mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"mint","variant":"candidate","fixture":"alternate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-alternate","mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'd4ed6bd1e157a9b8f6790a7826dca7959862296d'
-      QUEUED_SOURCE_SHA256: 'e3bf9dffa5341aa209780dbc17622fad1a0ad86310682d5a8e2177e5cb1d0f58'
+      SOURCE_COMMIT: '37ebfa88c7af36528cbb42e093292b4521ff91d3'
+      QUEUED_SOURCE_SHA256: '4ec5f6df48cb1e958c11faff2bd94800245f704bcf78f2ef9bb2a6266e9c981d'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
