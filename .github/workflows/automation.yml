@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Extended one-click Mint score round2-score-mint-full 20261122T001542Z-e3d225a195f0
+run-name: FreeBSD stock one-confirmation quarantine witness round2-score 20261122T001856Z-632bbc957647
 on:
   push:
     branches: [automation]
@@ -8,17 +8,17 @@ permissions:
   contents: read
 jobs:
   score_harness:
-    name: ${{ matrix.server_iis_seed_only && 'Verify Server alternate IIS fixture' || format('Score {0} {1}{2}', matrix.os, matrix.variant, matrix.fixture && format(' ({0})', matrix.fixture) || '') }}
+    name: ${{ matrix.server_iis_seed_only && 'Verify Server alternate IIS fixture' || format('Score {0} {1}', matrix.os, matrix.variant) }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: ${{ matrix.minutes }}
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"fixture":"","artifact_key":"mint-candidate","mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_quarantine":"conffile-metadata","runner":"ubuntu-24.04","seconds":420,"minutes":18,"mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '1938177783714cc8094548fde1ddae397630ab5a'
-      QUEUED_SOURCE_SHA256: '1575e00f18ce775ed7304b1a56c08a23036f3b72d12b284875aff974c759a57c'
+      SOURCE_COMMIT: '237b364ef7d0b573813ac677aa60d9d88b8064ab'
+      QUEUED_SOURCE_SHA256: 'd0d0c91c54711a9589138a46f6844bb0c817a60ac5106ed7815a8b13666343bd'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -32,7 +32,6 @@ jobs:
       CYPAT_SCORE_FREEBSD_ROSTER: ${{ matrix.freebsd_roster && '1' || '0' }}
       CYPAT_SCORE_FREEBSD_FILESYSTEMS: ${{ matrix.freebsd_filesystems && '1' || '0' }}
       CYPAT_SCORE_FREEBSD_CATALOG: ${{ matrix.freebsd_catalog }}
-      CYPAT_SCORE_FIXTURE: ${{ matrix.fixture }}
     steps:
       - name: Check out the pinned private source
         env:
@@ -112,7 +111,6 @@ jobs:
           if [[ -f $root/source/tools/round2/scoring/result.py ]]; then
             options=()
             if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
-            if [[ -n $CYPAT_SCORE_FIXTURE ]]; then options+=(--fixture "$CYPAT_SCORE_FIXTURE"); fi
             python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
           else
             printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
@@ -123,7 +121,7 @@ jobs:
         if: always() && !cancelled()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: score-${{ matrix.artifact_key }}-${{ github.run_attempt }}
+          name: score-${{ matrix.os }}-${{ matrix.variant }}-${{ github.run_attempt }}
           path: ${{ env.CYPAT_SCORE_JSON }}
           if-no-files-found: error
           retention-days: 7
