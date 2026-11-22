@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock catalog recovery (offline) round2-score 20261122T135154Z-a480a02e5d86
+run-name: Easy-point score from one-click candidates round2-score 20261122T135859Z-9748a2a94dd5
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"mint-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '25f37bc4414a777128180536d2272eaa3d1e7a23'
-      QUEUED_SOURCE_SHA256: '40027c3c7ba39e06913767359314250338f0a15f73dba6343ab25155d214c85d'
+      SOURCE_COMMIT: 'bcd11a9db391d30248866dd2b2b654c6d70db620'
+      QUEUED_SOURCE_SHA256: 'aa591659f4488637eab42f46f406b32e9f714f27571b938d0c864f62ba76dfdb'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -95,6 +95,8 @@ jobs:
               $label=[IO.File]::ReadAllText($phase)
               if($label -cmatch '\A(?:seed|before|apply|after)\z'){Write-Host "Server fixture stopped during $label."}
             }
+            $category=[string]$_.CategoryInfo.Category
+            if($category -cmatch '\A[A-Za-z]{1,40}\z'){Write-Host "Server fixture error category: $category."}
             throw ('Windows fixture stopped at controller line '+[string]$_.InvocationInfo.ScriptLineNumber)
           }
       - name: Restore stock FreeBSD media
