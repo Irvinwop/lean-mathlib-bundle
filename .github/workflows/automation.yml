@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock roster, inventory and recovery suite round2-score 20261122T225132Z-df16fa039355
+run-name: FreeBSD stock catalog recovery (offline) round2-score 20261122T225148Z-6781072154d0
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","fixture":"original","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"alternate","freebsd_roster":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"inventory","freebsd_quarantine":"conffile-metadata","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-inventory","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"live","freebsd_catalog":"live","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-live","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"offline","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-offline","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'fdf6877ceaf88d5f0952f936680c3c442058e9f7'
-      QUEUED_SOURCE_SHA256: 'e6e61a1a5589148197b68e3c0a7fede9f2749e1fcc03298a460937fbf1ded6bd'
+      SOURCE_COMMIT: '7d6676c694c86c4c3d1d14cf231ce11bf8a22394'
+      QUEUED_SOURCE_SHA256: '533e634a5de3857b28a61156872f229cf5ecc807a88180ba3464de3d0695ac36'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -106,9 +106,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 2
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock-media.qcow2
-          key: freebsd-stock-qcow2-a5289152ea5b9145cc89e58ab83186173e43b5ba1ed4e9358b8f357241476229
-      - name: Seed and score on the signed stock FreeBSD 15.1 image
+          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
+          key: freebsd-stock-qcow2-cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1
+      - name: Seed and score on the exact stock FreeBSD 15.1 ZFS image
         id: freebsd_stock
         if: matrix.os == 'freebsd'
         env:
@@ -122,7 +122,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 3
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock-media.qcow2
+          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
           key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
       - name: Publish the score only
         if: always() && !cancelled()
