@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click Debian score with a different README roster and ports round2-score-debian-roster 20261122T015942Z-2e7722ad824c
+run-name: Easy-point score from one-click candidates round2-score 20261122T020219Z-47721f3acdd2
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"fixture":"","artifact_key":"debian12-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":true,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'b6a6eba46582e9d56be793226d6cdf593bcd7d0c'
-      QUEUED_SOURCE_SHA256: '3c9629ce7c7f4ade3a68a264d237859f5348fa442e8fa5182c2da8ed5e31365d'
+      SOURCE_COMMIT: '3be6c52d972f8b488750d35074f5cf4c463f7c86'
+      QUEUED_SOURCE_SHA256: 'd4b87df0eabc65423cd83d3163559d0edf8ade6869236841a05e9ad44b0f57ff'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -97,11 +97,31 @@ jobs:
             }
             throw ('Windows fixture stopped at controller line '+[string]$_.InvocationInfo.ScriptLineNumber)
           }
-      - name: Seed and score on the signed stock FreeBSD 15.1 image
+      - name: Restore stock FreeBSD media
+        id: freebsd_media_cache
         if: matrix.os == 'freebsd'
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        continue-on-error: true
+        timeout-minutes: 2
+        with:
+          path: ${{ runner.temp }}/cypat-freebsd-stock-media.qcow2
+          key: freebsd-stock-qcow2-a5289152ea5b9145cc89e58ab83186173e43b5ba1ed4e9358b8f357241476229
+      - name: Seed and score on the signed stock FreeBSD 15.1 image
+        id: freebsd_stock
+        if: matrix.os == 'freebsd'
+        env:
+          CYPAT_SCORE_FREEBSD_MEDIA_CACHE: '1'
         shell: bash
         run: |
           bash "$CYPAT_SCORE_ROOT/source/tools/round2/scoring/run-freebsd-stock.sh"
+      - name: Cache verified stock FreeBSD media
+        if: matrix.os == 'freebsd' && steps.freebsd_stock.outputs.stock-media-save == 'true' && (matrix.fixture == '' || matrix.fixture == 'original' || matrix.fixture == 'package-directory-modes')
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        continue-on-error: true
+        timeout-minutes: 3
+        with:
+          path: ${{ runner.temp }}/cypat-freebsd-stock-media.qcow2
+          key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
       - name: Publish the score only
         if: always() && !cancelled()
         shell: bash
