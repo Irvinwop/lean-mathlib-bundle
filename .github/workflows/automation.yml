@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261122T192550Z-dc5101cf59f7
+run-name: FreeBSD stock catalog recovery (offline) round2-score 20261122T192839Z-b51dc5fab1da
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"server2022","variant":"candidate","fixture":"original","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"server2022","variant":"candidate","fixture":"alternate","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":true,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'ace5f4e72b6e9765c96900d18d0d40819240c72b'
-      QUEUED_SOURCE_SHA256: '796d41a1593b9f351672ea9513b985d662c5595e4d9624eb16f1fcd49c0344b3'
+      SOURCE_COMMIT: '49e379b1563cffc05cf81aa376f0c488ed4e76d3'
+      QUEUED_SOURCE_SHA256: 'b96ea89739968dfbaa31c60629cd5bd28ad0670f630534c8ef02e7d73d299d3a'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -95,8 +95,6 @@ jobs:
               $label=[IO.File]::ReadAllText($phase)
               if($label -cmatch '\A(?:seed|before|apply|after)\z'){Write-Host "Server fixture stopped during $label."}
             }
-            $category=[string]$_.CategoryInfo.Category
-            if($category -cmatch '\A[A-Za-z]{1,40}\z'){Write-Host "Server fixture error category: $category."}
             throw ('Windows fixture stopped at controller line '+[string]$_.InvocationInfo.ScriptLineNumber)
           }
       - name: Restore stock FreeBSD media
@@ -174,7 +172,7 @@ jobs:
         if: always() && !cancelled() && steps.debian_diagnostics.outputs.sealed == 'yes'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: encrypted-debian-diagnostics-${{ matrix.fixture && format('{0}-', matrix.fixture) || '' }}${{ github.run_attempt }}
+          name: encrypted-debian-diagnostics-${{ github.run_attempt }}
           path: ${{ runner.temp }}/debian-diagnostics.cms
           if-no-files-found: error
           retention-days: 3
