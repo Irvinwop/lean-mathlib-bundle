@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock catalog recovery (boot-resources) round2-score 20261122T035423Z-fef35ad4e08c
+run-name: FreeBSD stock catalog recovery (live) round2-score 20261122T035441Z-db2ccb337198
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"boot-resources","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"live","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'b710100483d40ec76f90edb2548912eee14442f0'
-      QUEUED_SOURCE_SHA256: 'd5653968ecff3dd5fbb7d8a58c0a9d2c8a562ef5ff80f350c35ab92ac1133f3a'
+      SOURCE_COMMIT: '75b9ff4102554e43bf2fded4c9d15c5943aeea7c'
+      QUEUED_SOURCE_SHA256: 'ea70803c4a3b974613c2f3e6c4fd1c0f2b3f1c2ce21220cecaa177c974930037'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
