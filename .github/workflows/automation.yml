@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock fixture (offline) round2-score 20261122T194622Z-3a2108fb6ae9
+run-name: FreeBSD stock fixture (live) round2-score 20261122T194631Z-74c2e4755d97
 on:
   push:
     branches: [automation]
@@ -14,10 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","fixture":"offline","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-offline","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","fixture":"live","freebsd_catalog":"live","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-live","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '04261e86357b346c3a208a9fd970bf003aeda247'
+      SOURCE_COMMIT: '026ebec3332fe45eb1a166afb2f90df2de89a654'
       QUEUED_SOURCE_SHA256: '3602cde36f175e1460743751354c7ff4d907241f65eafac3dc7d1b74f73e0a99'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
