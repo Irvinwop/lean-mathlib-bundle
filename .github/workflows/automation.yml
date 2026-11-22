@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock catalog recovery (offline) round2-score 20261122T233123Z-c2f131e41e3d
+run-name: FreeBSD stock catalog recovery (offline) round2-score 20261122T233137Z-cb3c019762ca
 on:
   push:
     branches: [automation]
@@ -17,8 +17,8 @@ jobs:
         include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '10c432d2bbd455e5a6e0ede87b454a9fb21a6ad1'
-      QUEUED_SOURCE_SHA256: '781ad4ade88b7153c3d4c586efed6cd6d258c9abf11a07965ade68490a949d9c'
+      SOURCE_COMMIT: 'fc81b20a4c1f22259dc0b248c39f2c6f7ef67896'
+      QUEUED_SOURCE_SHA256: '13463d801abc2023d4e046d804e3df11063ce8387abb73e08ddeeff3561d5259'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
