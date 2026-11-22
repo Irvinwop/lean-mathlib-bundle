@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock catalog recovery (setid-metadata) round2-score 20261122T080747Z-6a08ad17c7bd
+run-name: One-click Mint score with a different Desktop README roster and ports round2-score-mint-roster 20261122T080757Z-2d9f30e9a2ee
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"setid-metadata","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"fixture":"","artifact_key":"mint-candidate","mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '510d20e046ab0ff3c525c45877db3171327df8be'
-      QUEUED_SOURCE_SHA256: 'c964ee0a393cd39a106eb06c1a00cabfe2a50437099bb057afa1db81552bbdba'
+      SOURCE_COMMIT: '5777ec9f765b6f5371ca24911e952effe240b1cc'
+      QUEUED_SOURCE_SHA256: '83f313352c539aa090ef4269d0ae03cf61c84c8ce408ee6f59672bae0bf6faea'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
