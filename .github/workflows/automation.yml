@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261122T195959Z-9b24c9bb2257
+run-name: FreeBSD stock native repair suite round2-score 20261122T200210Z-590e4af54f48
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","fixture":"original","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-original","mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"mint","variant":"candidate","fixture":"alternate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-alternate","mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","fixture":"package-directory-modes","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-package-directory-modes","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"pkg-live-recovery","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-pkg-live-recovery","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"ports-data-metadata","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-ports-data-metadata","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"program-link-displacement","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-program-link-displacement","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"symlink-target-restore","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-symlink-target-restore","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'a50572c788ccf01efd85d1cc07dab0389ea23936'
-      QUEUED_SOURCE_SHA256: 'f49581bb9e8aac5876246c67b68a31bc9b93797265c72f3fa8ab05a1559954a0'
+      SOURCE_COMMIT: '8e6ed5fe2b16899f926bae7bc5c74f4c717161ef'
+      QUEUED_SOURCE_SHA256: '08cd44414ae60caa0a14f63504d790dc07910f11f13d99219e2fbe3c8cdf3588'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -95,8 +95,6 @@ jobs:
               $label=[IO.File]::ReadAllText($phase)
               if($label -cmatch '\A(?:seed|before|apply|after)\z'){Write-Host "Server fixture stopped during $label."}
             }
-            $category=[string]$_.CategoryInfo.Category
-            if($category -cmatch '\A[A-Za-z]{1,40}\z'){Write-Host "Server fixture error category: $category."}
             throw ('Windows fixture stopped at controller line '+[string]$_.InvocationInfo.ScriptLineNumber)
           }
       - name: Restore stock FreeBSD media
@@ -174,7 +172,7 @@ jobs:
         if: always() && !cancelled() && steps.debian_diagnostics.outputs.sealed == 'yes'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: encrypted-debian-diagnostics-${{ matrix.fixture && format('{0}-', matrix.fixture) || '' }}${{ github.run_attempt }}
+          name: encrypted-debian-diagnostics-${{ github.run_attempt }}
           path: ${{ runner.temp }}/debian-diagnostics.cms
           if-no-files-found: error
           retention-days: 3
