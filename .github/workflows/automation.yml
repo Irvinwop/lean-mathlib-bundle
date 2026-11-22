@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock fixture (original) round2-score 20261122T220740Z-deead409804b
+run-name: Extended one-click Mint score round2-score-mint-full 20261122T220922Z-3450044e0595
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","fixture":"original","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"mint","variant":"candidate","runner":"ubuntu-22.04","seconds":3600,"minutes":85,"fixture":"","artifact_key":"mint-candidate","mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '8a9e3e5a39810e2b318816c3affef27e64a02480'
-      QUEUED_SOURCE_SHA256: 'bdbd34fe04dc4d5ab0727f64715528369330ba38b02a57818f117b5d5e722e81'
+      SOURCE_COMMIT: 'a11a919093f37ca856bbf1f445d25310db0a6943'
+      QUEUED_SOURCE_SHA256: 'c9d950d1951d37f74e4de42fe22a5783c97069300a775c622b111db6d6affd49'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -106,9 +106,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 2
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
-          key: freebsd-stock-qcow2-cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1
-      - name: Seed and score on the exact stock FreeBSD 15.1 ZFS image
+          path: ${{ runner.temp }}/cypat-freebsd-stock-media.qcow2
+          key: freebsd-stock-qcow2-a5289152ea5b9145cc89e58ab83186173e43b5ba1ed4e9358b8f357241476229
+      - name: Seed and score on the signed stock FreeBSD 15.1 image
         id: freebsd_stock
         if: matrix.os == 'freebsd'
         env:
@@ -122,7 +122,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 3
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
+          path: ${{ runner.temp }}/cypat-freebsd-stock-media.qcow2
           key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
       - name: Publish the score only
         if: always() && !cancelled()
