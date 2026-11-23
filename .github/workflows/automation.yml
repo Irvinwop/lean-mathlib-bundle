@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock roster, inventory and recovery suite (ZFS) round2-score 20261123T051649Z-30096cdeb4a2
+run-name: Extended one-click Debian score round2-score-debian-full 20261123T052126Z-5ef96bb36fd4
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","fixture":"original","freebsd_rootfs":"zfs","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"alternate","freebsd_rootfs":"zfs","freebsd_roster":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_quarantine":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"inventory","freebsd_rootfs":"zfs","freebsd_quarantine":"conffile-metadata","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-inventory","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_catalog":"","freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"live","freebsd_rootfs":"zfs","freebsd_catalog":"live","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-live","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"freebsd","variant":"candidate","fixture":"offline","freebsd_rootfs":"zfs","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-offline","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"fixture":"","artifact_key":"debian12-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '69e3f396ca04e5906a3de39b64d391511b24b3df'
-      QUEUED_SOURCE_SHA256: 'a23ce1d2c653bb689c8a86a8bc35647dc1d5a5680d909bd16b834179a967d7e6'
+      SOURCE_COMMIT: '41450e02a58c54c7a214b794d53a979dc4ba1a3a'
+      QUEUED_SOURCE_SHA256: '74f82774ee5006e4adf309dc59dea9e5d56e551235da984bd2f8e74f2badc991'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
