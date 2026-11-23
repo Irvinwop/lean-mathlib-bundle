@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261123T012809Z-f00213bbd95b
+run-name: One-click score with both README rosters round2-score-rosters 20261123T012822Z-22c551475c8d
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"debian12","variant":"candidate","fixture":"original","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"artifact_key":"debian12-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"debian12","variant":"candidate","fixture":"alternate","runner":"ubuntu-24.04","seconds":1800,"minutes":55,"artifact_key":"debian12-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":true,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"mint","variant":"candidate","fixture":"original","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-original","mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"mint","variant":"candidate","fixture":"alternate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-alternate","mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '8059152eb7255cb261efcfd02308db50d0378dfa'
-      QUEUED_SOURCE_SHA256: '6f6e68614a0034244555812aa4783dcc38e4ea97084c9fb29e83d914ef244004'
+      SOURCE_COMMIT: '7a1724c182a234aefd3ab880effde27281d88879'
+      QUEUED_SOURCE_SHA256: 'd4139e262ac6e2bca26fda2a79f1aa89f6e3be9821bb1c2391a762ef077a04bd'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
