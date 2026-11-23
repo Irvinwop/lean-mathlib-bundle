@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261123T010051Z-d36705df9205
+run-name: FreeBSD stock catalog recovery (offline) round2-score 20261123T010335Z-fce4dc976457
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"server2022","variant":"candidate","fixture":"original","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"server2022","variant":"candidate","fixture":"alternate","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":true,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'fd43ad16b8d90def15b9fa08503cf24af0d5fb40'
-      QUEUED_SOURCE_SHA256: 'bd95d9b8b48af452577f0d2f05c1330db8ff5f4d11f7d52417f514fc85eda81a'
+      SOURCE_COMMIT: '48a41635de5be1312380990c9e2bf5a438efbc58'
+      QUEUED_SOURCE_SHA256: 'dfb150e0a9b939fc5ae3aa7e50899a568eff53333236ac3826219646ea3f666f'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -31,7 +31,6 @@ jobs:
       CYPAT_SCORE_FREEBSD_QUARANTINE: ${{ (matrix.freebsd_quarantine == 'conffiles' || matrix.freebsd_quarantine == 'conffile-metadata' || matrix.freebsd_quarantine == 'acl-observation') && matrix.freebsd_quarantine || (matrix.freebsd_quarantine && '1' || '0') }}
       CYPAT_SCORE_FREEBSD_ROSTER: ${{ matrix.freebsd_roster && '1' || '0' }}
       CYPAT_SCORE_FREEBSD_FILESYSTEMS: ${{ matrix.freebsd_filesystems && '1' || '0' }}
-      CYPAT_SCORE_FREEBSD_ROOTFS: ${{ matrix.freebsd_rootfs }}
       CYPAT_SCORE_FREEBSD_CATALOG: ${{ matrix.freebsd_catalog }}
       CYPAT_SCORE_FIXTURE: ${{ matrix.fixture }}
     steps:
@@ -107,9 +106,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 2
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
-          key: freebsd-stock-qcow2-${{ matrix.freebsd_rootfs == 'zfs' && 'cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1' || 'a5289152ea5b9145cc89e58ab83186173e43b5ba1ed4e9358b8f357241476229' }}
-      - name: Seed and score on the signed stock FreeBSD 15.1 image
+          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
+          key: freebsd-stock-qcow2-cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1
+      - name: Seed and score on the exact stock FreeBSD 15.1 ZFS image
         id: freebsd_stock
         if: matrix.os == 'freebsd'
         env:
@@ -123,7 +122,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 3
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
+          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
           key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
       - name: Publish the score only
         if: always() && !cancelled()
@@ -136,7 +135,6 @@ jobs:
             options=()
             if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
             if [[ -n $CYPAT_SCORE_FIXTURE ]]; then options+=(--fixture "$CYPAT_SCORE_FIXTURE"); fi
-            if [[ -n $CYPAT_SCORE_FREEBSD_ROOTFS ]]; then options+=(--freebsd-rootfs "$CYPAT_SCORE_FREEBSD_ROOTFS"); fi
             python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
           else
             printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
