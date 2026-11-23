@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock catalog recovery (offline) round2-score 20261123T010347Z-0d7d501bdbfa
+run-name: FreeBSD stock fixture (live) (ZFS) round2-score 20261123T010840Z-2bcd9a75b18f
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","fixture":"live","freebsd_rootfs":"zfs","freebsd_catalog":"live","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-live","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'b3ce1c86273c7a1692eb76683093f45c2255d684'
-      QUEUED_SOURCE_SHA256: 'aa416c68cae5923a2a705f972e47c67033ef8012ecc1b3ff7fd7e2e3b1890eb8'
+      SOURCE_COMMIT: 'c545910c685dc3215cec4caa2043bd360badf757'
+      QUEUED_SOURCE_SHA256: '2cd71f5bfa7cde87ad28e548e6d77709ff9b5ff5ca62098c43dc46bc4a60dd1f'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -31,6 +31,7 @@ jobs:
       CYPAT_SCORE_FREEBSD_QUARANTINE: ${{ (matrix.freebsd_quarantine == 'conffiles' || matrix.freebsd_quarantine == 'conffile-metadata' || matrix.freebsd_quarantine == 'acl-observation') && matrix.freebsd_quarantine || (matrix.freebsd_quarantine && '1' || '0') }}
       CYPAT_SCORE_FREEBSD_ROSTER: ${{ matrix.freebsd_roster && '1' || '0' }}
       CYPAT_SCORE_FREEBSD_FILESYSTEMS: ${{ matrix.freebsd_filesystems && '1' || '0' }}
+      CYPAT_SCORE_FREEBSD_ROOTFS: ${{ matrix.freebsd_rootfs }}
       CYPAT_SCORE_FREEBSD_CATALOG: ${{ matrix.freebsd_catalog }}
       CYPAT_SCORE_FIXTURE: ${{ matrix.fixture }}
     steps:
@@ -106,9 +107,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 2
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
-          key: freebsd-stock-qcow2-cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1
-      - name: Seed and score on the exact stock FreeBSD 15.1 ZFS image
+          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
+          key: freebsd-stock-qcow2-${{ matrix.freebsd_rootfs == 'zfs' && 'cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1' || 'a5289152ea5b9145cc89e58ab83186173e43b5ba1ed4e9358b8f357241476229' }}
+      - name: Seed and score on the signed stock FreeBSD 15.1 image
         id: freebsd_stock
         if: matrix.os == 'freebsd'
         env:
@@ -122,7 +123,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 3
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock-zfs-media.qcow2
+          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
           key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
       - name: Publish the score only
         if: always() && !cancelled()
@@ -135,6 +136,7 @@ jobs:
             options=()
             if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
             if [[ -n $CYPAT_SCORE_FIXTURE ]]; then options+=(--fixture "$CYPAT_SCORE_FIXTURE"); fi
+            if [[ -n $CYPAT_SCORE_FREEBSD_ROOTFS ]]; then options+=(--freebsd-rootfs "$CYPAT_SCORE_FREEBSD_ROOTFS"); fi
             python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
           else
             printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
