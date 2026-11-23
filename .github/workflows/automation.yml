@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock fixture (original) round2-score 20261123T095649Z-bb42db1d6061
+run-name: FreeBSD stock fixture (original) round2-score 20261123T100608Z-89b07ee7e65a
 on:
   push:
     branches: [automation]
@@ -17,8 +17,8 @@ jobs:
         include: [{"os":"freebsd","variant":"candidate","fixture":"original","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '44961a5bab53a091ca226ab76a2dfbea0b2a1aa6'
-      QUEUED_SOURCE_SHA256: 'e0c5180126caf5eb9ffaafda6f13f3e75c689739d30494e05b0f6d2bf543be51'
+      SOURCE_COMMIT: '2cf45f379552698278707f85b782f8a60580068e'
+      QUEUED_SOURCE_SHA256: '0e2e61dce7b46b818bc0fe1d6854f3499630c8025cc4af41874456f284e350a9'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
