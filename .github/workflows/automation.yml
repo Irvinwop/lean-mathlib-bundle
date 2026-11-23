@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock fixture (live) (ZFS) round2-score 20261123T024347Z-6a31cab4ec53
+run-name: FreeBSD stock fixture (offline) (ZFS) round2-score 20261123T024938Z-f00d800cde29
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","fixture":"live","freebsd_rootfs":"zfs","freebsd_catalog":"live","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-live","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","fixture":"offline","freebsd_rootfs":"zfs","freebsd_catalog":"offline","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-offline","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '9f1a89eaed2cbe8b0d5f1c5a808993993d4e4fe7'
-      QUEUED_SOURCE_SHA256: '677328dd3c42abd483afe7201d42027c91eb3bf2275782d895d3b2ededa95abd'
+      SOURCE_COMMIT: '06c7f15f90607be430f44a6a8576f487e155d9af'
+      QUEUED_SOURCE_SHA256: '7b7d26f39fea91ce73d8da501a475cf8ed02df5a9e42576a31b0776a7456404e'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -127,6 +127,8 @@ jobs:
           key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
       - name: Publish the score only
         if: always() && !cancelled()
+        env:
+          FREEBSD_STOCK_OUTCOME: ${{ steps.freebsd_stock.outcome }}
         shell: bash
         run: |
           set -euo pipefail
@@ -137,6 +139,7 @@ jobs:
             if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
             if [[ -n $CYPAT_SCORE_FIXTURE ]]; then options+=(--fixture "$CYPAT_SCORE_FIXTURE"); fi
             if [[ -n $CYPAT_SCORE_FREEBSD_ROOTFS ]]; then options+=(--freebsd-rootfs "$CYPAT_SCORE_FREEBSD_ROOTFS"); fi
+            if [[ $CYPAT_SCORE_OS == freebsd ]]; then options+=(--freebsd-stock-outcome "${FREEBSD_STOCK_OUTCOME:-}"); fi
             python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
           else
             printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
