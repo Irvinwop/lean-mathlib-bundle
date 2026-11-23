@@ -1,5 +1,5 @@
-name: Automated checks
-run-name: Native Server 2022 browser components native-windows-browser-maintenance 20261123T110709Z-a014b0678eba
+name: Easy-point scoring
+run-name: One-click score with both README rosters round2-score-rosters 20261123T110739Z-0c81503e14a5
 on:
   push:
     branches: [automation]
@@ -7,352 +7,179 @@ on:
 permissions:
   contents: read
 jobs:
-  windows_build:
-    name: Windows ZIP build before VM preparation
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
+  score_harness:
+    name: ${{ matrix.server_iis_seed_only && 'Verify Server alternate IIS fixture' || format('Score {0} {1}{2}', matrix.os, matrix.variant, matrix.fixture && format(' ({0})', matrix.fixture) || '') }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: ${{ matrix.minutes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [{"os":"server2022","variant":"candidate","fixture":"original","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":false,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"server2022","variant":"candidate","fixture":"alternate","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"server_roster":true,"server_iis_seed_only":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '12dd66046a4d240089980ab5cd81ae513d76c43b'
-      FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      CYPAT_BUNDLE_SCOPE: 'preserve'
-      CYPAT_PRIVATE_ROOT: /tmp/cypat-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+      SOURCE_COMMIT: '1c10e38af2d1fdb5f3bdb7772f68359591240b48'
+      QUEUED_SOURCE_SHA256: '61eb9147a041e3e60168106e38c5242a011c9122c8a160795d17eb9878824edc'
+      CYPAT_SCORE_OS: ${{ matrix.os }}
+      CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
+      CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
+      CYPAT_SCORE_DEBIAN_ROSTER: ${{ matrix.debian_roster && '1' || '0' }}
+      CYPAT_SCORE_SERVER_ROSTER: ${{ matrix.server_roster && '1' || '0' }}
+      CYPAT_SCORE_SERVER_IIS_SEED_ONLY: ${{ matrix.server_iis_seed_only && '1' || '0' }}
+      CYPAT_SCORE_MINT_WITNESS: ${{ matrix.mint_witness && '1' || '0' }}
+      CYPAT_SCORE_MINT_ROSTER: ${{ matrix.mint_roster && '1' || '0' }}
+      CYPAT_SCORE_MINT_REVIEWED: ${{ matrix.mint_reviewed && '1' || '0' }}
+      CYPAT_SCORE_FREEBSD_QUARANTINE: ${{ (matrix.freebsd_quarantine == 'conffiles' || matrix.freebsd_quarantine == 'conffile-metadata' || matrix.freebsd_quarantine == 'acl-observation') && matrix.freebsd_quarantine || (matrix.freebsd_quarantine && '1' || '0') }}
+      CYPAT_SCORE_FREEBSD_ROSTER: ${{ matrix.freebsd_roster && '1' || '0' }}
+      CYPAT_SCORE_FREEBSD_FILESYSTEMS: ${{ matrix.freebsd_filesystems && '1' || '0' }}
+      CYPAT_SCORE_FREEBSD_ROOTFS: ${{ matrix.freebsd_rootfs }}
+      CYPAT_SCORE_FREEBSD_CATALOG: ${{ matrix.freebsd_catalog }}
+      CYPAT_SCORE_FIXTURE: ${{ matrix.fixture }}
     steps:
-      - name: Download private input
+      - name: Check out the pinned private source
         env:
           SOURCE_KEY: ${{ secrets.FIXTURE_SOURCE_KEY }}
         shell: bash
         run: |
-          set +x
+          set -euo pipefail
+          [[ $RUNNER_ENVIRONMENT == github-hosted ]]
           umask 077
-          private="$CYPAT_PRIVATE_ROOT"
-          mkdir -p "$private/report" "$private/source"
-          echo 125 > "$private/report/exit-code"
-          # Never print a private command's error, a source filename, or a log tail.
-          exec >"$private/report/bootstrap.log" 2>&1
-          printf '%s\n' "$SOURCE_KEY" > "$private/key"
-          trap 'rm -f "$private/key"' EXIT
-          # Published GitHub Ed25519 host key, independently fingerprint-checked
-          # on the trusted preparation machine. No unauthenticated API request.
-          printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > "$private/known_hosts"
-          git -C "$private/source" init -q
+          root=$(mktemp -d "$RUNNER_TEMP/cypat-score.XXXXXXXX")
+          if [[ $RUNNER_OS == Windows ]]; then root=$(cygpath -am "$root"); fi
+          echo "CYPAT_SCORE_ROOT=$root" >> "$GITHUB_ENV"
+          cd "$root"
+          mkdir source
+          exec >bootstrap.log 2>&1
+          printf '%s\n' "$SOURCE_KEY" >key
           unset SOURCE_KEY
-          export GIT_SSH_COMMAND="ssh -F none -i \"$private/key\" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile=\"$private/known_hosts\""
-          git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git "$SOURCE_COMMIT"
-          git -C "$private/source" -c core.hooksPath=/dev/null -c core.autocrlf=false -c core.eol=lf checkout -q --detach FETCH_HEAD
-          test "$(git -C "$private/source" rev-parse HEAD)" = "$SOURCE_COMMIT"
-          cd "$private/source"
-          while IFS= read -r -d '' row; do
-            mode=${row%% *}
-            path=${row#* }
-            [[ $mode =~ ^[0-7]{3,4}$ && -n $path && $path != /* && /$path/ != */../* && ! -L $path ]]
-            chmod "$mode" -- "$path"
-          done < CI-SOURCE.modes
-          sha256sum --check --strict CI-SOURCE.SHA256SUMS
-      - name: Build private package and smoke driver
+          trap 'rm -f key known_hosts' EXIT
+          printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' >known_hosts
+          export GIT_CONFIG_NOSYSTEM=1 GIT_TERMINAL_PROMPT=0
+          export GIT_SSH_COMMAND="ssh -F none -i '$root/key' -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile='$root/known_hosts'"
+          git -C source init -q
+          git -C source fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git "$SOURCE_COMMIT"
+          git -C source -c core.hooksPath=/dev/null -c core.autocrlf=false checkout -q --detach FETCH_HEAD
+          test "$(git -C source rev-parse HEAD)" = "$SOURCE_COMMIT"
+          test "$(cat source/CI-SOURCE.sha256)" = "$QUEUED_SOURCE_SHA256"
+          (cd source; sha256sum --quiet --strict -c CI-SOURCE.SHA256SUMS)
+      - name: Verify the exact encrypted artifact
+        if: matrix.server_iis_seed_only == false
         env:
           FIXTURE_INPUT_KEY: ${{ secrets.FIXTURE_INPUT_KEY }}
         shell: bash
         run: |
-          set +x
-          umask 077
-          private="$CYPAT_PRIVATE_ROOT"
-          exec >"$private/stage.log" 2>&1
-          cd "$private/source"
-          mkdir -p "$private/report" "$private/source-gate"
-          code=0
-          (
-            unset FIXTURE_INPUT_KEY CYPAT_WINDOWS_PARENT_CACHE_MODE
-            export RUNNER_TEMP=/tmp CYPAT_RETURN_TESTED_BUNDLE=0 CYPAT_PREPARE_STOCK_WINDOWS=0
-            /bin/bash ci/hosted-run ci-engine "$private/source-gate" \
-              >"$private/source-gate/bootstrap.log" 2>&1
-          ) || code=$?
-          printf '%s\n' "$code" > "$private/report/exit-code"
-          # Compress source diagnostics for the existing bounded build sealer;
-          # omit bulky authored fixture payloads.
-          (
-            cd "$private/source-gate"
-            shopt -s nullglob
-            diagnostics=(*.log *exit-status source/*.json source/*.sha256 \
-              source/*.SHA256SUMS source/*.tsv source/nodes/*/*.log \
-              source/nodes/*/artifacts/junit.xml)
-            tar -czf "$private/report/source-gate.tar.gz" -- "${diagnostics[@]}"
-          )
-          ((code == 0)) || exit "$code"
-          # Source success is not build success; retain failure by default if
-          # the original package constructor exits before publishing a report.
-          printf '%s\n' 2 > "$private/report/exit-code"
-          printf '%s\n' "$FIXTURE_INPUT_KEY" > "$private/fixture-input.pem"
-          unset FIXTURE_INPUT_KEY
-          trap 'rm -f "$private/fixture-input.pem"' EXIT
-          printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d > "$private/fixture.crt"
-          cd "$private/source"
-          RUNNER_TEMP=/tmp /usr/bin/python3 -I -B ci/hosted-windows-preflight-job build \
-            --private "$private" --scope "$CYPAT_BUNDLE_SCOPE" \
-            --key "$private/fixture-input.pem" --certificate "$private/fixture.crt"
-      - name: Upload encrypted preflight package
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: encrypted-windows-preflight-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/handoff/payload.cms
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
-      - name: Seal private build diagnostics
-        if: always()
+          set -euo pipefail
+          cd "$CYPAT_SCORE_ROOT"
+          phase=baseline
+          if [[ $CYPAT_SCORE_VARIANT == candidate ]]; then phase=candidate; fi
+          python -I -B source/tools/round2/scoring/fetch-input "$CYPAT_SCORE_OS" "$phase" inputs --id "$CYPAT_SCORE_VARIANT" >input.json 2>input.log
+      - name: Seed and score inside the Linux systemd container
+        if: matrix.os == 'debian12' || matrix.os == 'mint'
         shell: bash
         run: |
-          set +x
-          umask 077
-          private="$CYPAT_PRIVATE_ROOT"
-          exec >"$RUNNER_TEMP/preflight-sealing.log" 2>&1
-          mkdir -p "$private/report"
-          printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d > "$private/fixture.crt"
-          code=2
-          if [[ -f $private/source/ci/hosted-windows-preflight-job ]]; then
-            cd "$private/source"
-            code=0
-            RUNNER_TEMP=/tmp /usr/bin/python3 -I -B ci/hosted-windows-preflight-job seal \
-              --private "$private" --certificate "$private/fixture.crt" || code=$?
-          fi
-          if ((code != 0)); then
-            # Bootstrap/import/sealing can fail before private source is usable.
-            # Retain bounded failure diagnostics with only the system runtime.
-            rm -f -- "$private/sealed/report.cms"
-            /usr/bin/python3 -I -B - "$private" "$RUNNER_TEMP/preflight-sealing.log" <<'PY'
-          import pathlib, sys, zipfile
-          private = pathlib.Path(sys.argv[1])
-          (private/'sealed').mkdir(exist_ok=True)
-          with zipfile.ZipFile(private/'emergency-report.zip', 'x') as output:
-              output.writestr('sealing-failure.txt', 'Build diagnostics incomplete; VM admission is blocked.\n')
-              # Source checks can fail on the sealer's own imports. Retain the
-              # diagnostic archive without truncating its compressed bytes.
-              for name in ('source-gate.tar.gz', 'exit-code'):
-                  path = private/'report'/name
-                  if path.is_file() and path.stat().st_size <= 16*1024**2:
-                      output.write(path, name)
-              for index, path in enumerate([private/'report/bootstrap.log', private/'stage.log',
-                                             private/'stage-error.log', pathlib.Path(sys.argv[2])]):
-                  if path.is_file():
-                      with path.open('rb') as stream:
-                          stream.seek(max(0, path.stat().st_size - 2*1024**2))
-                          output.writestr('failure-'+str(index)+'.log', stream.read(2*1024**2))
-          PY
-            openssl cms -encrypt -binary -aes-256-gcm -outform DER \
-              -in "$private/emergency-report.zip" -out "$private/sealed/report.cms.partial" "$private/fixture.crt"
-            mv "$private/sealed/report.cms.partial" "$private/sealed/report.cms"
-            exit 2
-          fi
-      - name: Upload encrypted build diagnostics
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: encrypted-windows-build-report-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/sealed/report.cms
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
-
-  windows_browser_maintenance:
-    name: Slow Firefox version-changing update and Chrome maintenance on disposable Server 2022
-    needs: windows_build
-    runs-on: windows-2022
-    timeout-minutes: 60
-    environment: private-fixtures
-    env:
-      SOURCE_COMMIT: '12dd66046a4d240089980ab5cd81ae513d76c43b'
-      REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      CYPAT_BUNDLE_SCOPE: 'preserve'
-    steps:
-      - name: Obtain pinned private maintenance source
-        env:
-          SOURCE_KEY: ${{ secrets.FIXTURE_SOURCE_KEY }}
-        shell: pwsh
+          cd "$CYPAT_SCORE_ROOT"
+          status=0
+          bash source/tools/round2/scoring/run-container.sh >fixture.log 2>&1 || status=$?
+          if [[ -f legacy-status.log ]]; then grep '^legacy-debian:' legacy-status.log | cut -c1-200 || true; fi
+          exit "$status"
+      - name: Seed and score on the standalone Windows Server runner
+        if: matrix.os == 'server2022'
+        shell: powershell
         run: |
-          $ErrorActionPreference = 'Stop'
-          if ($env:GITHUB_RUN_ID -cnotmatch '\A[1-9][0-9]*\z' -or $env:GITHUB_RUN_ATTEMPT -cnotmatch '\A[1-9][0-9]*\z' -or
-              $env:GITHUB_JOB -cne 'windows_browser_maintenance' -or
-              $env:GITHUB_WORKFLOW_REF -cne 'Irvinwop/lean-mathlib-bundle/.github/workflows/automation.yml@refs/heads/automation') { throw 'Require the dedicated browser job identity' }
-          # Snapshot preserves C: browser originals in place. Run the original
-          # source and every actual product report on that same volume.
-          $private = 'C:\Windows\Temp\bm-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT
-          foreach ($path in @('C:\', 'C:\Windows', 'C:\Windows\Temp')) {
-            $attributes = [IO.File]::GetAttributes($path)
-            if ($attributes -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device) -or
-                -not ($attributes -band [IO.FileAttributes]::Directory)) { throw 'Require ordinary C: temporary ancestors' }
-          }
+          $ErrorActionPreference='Stop'
+          $arguments=@{}
+          if($env:CYPAT_SCORE_SERVER_IIS_SEED_ONLY -ceq '1'){$arguments.IisSeedOnly=$true}
           try {
-            $null = [IO.File]::GetAttributes($private)
-            throw 'Preserve the existing browser private root; a run attempt cannot reuse it'
+            & (Join-Path $env:CYPAT_SCORE_ROOT 'source/tools/round2/scoring/run-server.ps1') @arguments *> (Join-Path $env:CYPAT_SCORE_ROOT 'fixture.log')
           } catch {
-            $cause = $_.Exception.GetBaseException()
-            if ($cause -isnot [IO.FileNotFoundException] -and $cause -isnot [IO.DirectoryNotFoundException]) { throw }
+            $phase=Join-Path $env:CYPAT_SCORE_ROOT 'server-phase'
+            if(Test-Path -LiteralPath $phase){
+              $label=[IO.File]::ReadAllText($phase)
+              if($label -cmatch '\A(?:seed|before|apply|after)\z'){Write-Host "Server fixture stopped during $label."}
+            }
+            $category=[string]$_.CategoryInfo.Category
+            if($category -cmatch '\A[A-Za-z]{1,40}\z'){Write-Host "Server fixture error category: $category."}
+            throw ('Windows fixture stopped at controller line '+[string]$_.InvocationInfo.ScriptLineNumber)
           }
-          $sid = [Security.Principal.WindowsIdentity]::GetCurrent().User
-          $privateAcl = [Security.AccessControl.DirectorySecurity]::new()
-          $privateAcl.SetOwner($sid)
-          $privateAcl.SetAccessRuleProtection($true, $false)
-          foreach ($id in @($sid.Value, 'S-1-5-18', 'S-1-5-32-544')) {
-            $privateAcl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new(
-              [Security.Principal.SecurityIdentifier]::new($id), 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow'))
-          }
-          $null = [IO.FileSystemAclExtensions]::Create([IO.DirectoryInfo]::new($private), $privateAcl)
-          $attributes = [IO.File]::GetAttributes($private)
-          if ($attributes -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device) -or
-              -not ($attributes -band [IO.FileAttributes]::Directory)) { throw 'Require an ordinary newly owned browser root' }
-          function Write-NewPrivateText([string]$path, [string]$value) {
-            $bytes = [Text.UTF8Encoding]::new($false).GetBytes($value)
-            $stream = [IO.File]::Open($path, 'CreateNew', 'Write', 'None')
-            try { $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Dispose() }
-          }
-          [IO.File]::AppendAllText($env:GITHUB_ENV, ('CYPAT_PRIVATE_ROOT=' + $private + "`n"), [Text.UTF8Encoding]::new($false))
-          try {
-            & {
-              New-Item -ItemType Directory -Path "$private/source", "$private/browser-result" | Out-Null
-              Write-NewPrivateText "$private/browser-result/exit-code" '2'
-              $sourceKey = ($env:SOURCE_KEY -replace "`r`n", "`n").TrimEnd([char[]]"`r`n") + "`n"
-              Write-NewPrivateText "$private/key" $sourceKey
-              Remove-Item Env:SOURCE_KEY
-              $sourceKey = $null
-              $acl = [Security.AccessControl.FileSecurity]::new()
-              $acl.SetOwner($sid)
-              $acl.SetAccessRuleProtection($true, $false)
-              $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($sid, 'FullControl', 'Allow'))
-              Set-Acl -LiteralPath "$private/key" -AclObject $acl
-              Write-NewPrivateText "$private/known_hosts" "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl`n"
-              $sshRoot = $private.Replace('\', '/')
-              $env:GIT_SSH_COMMAND = '"C:/Windows/System32/OpenSSH/ssh.exe" -F none -i "' + $sshRoot + '/key" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile="' + $sshRoot + '/known_hosts"'
-              $env:GIT_SSH_VARIANT = 'ssh'
-              $env:GIT_CONFIG_NOSYSTEM = '1'
-              $env:GIT_CONFIG_GLOBAL = 'NUL'
-              $env:GIT_TERMINAL_PROMPT = '0'
-              & git -C "$private/source" init -q
-              if ($LASTEXITCODE) { throw 'Private initialization failed' }
-              & git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git $env:SOURCE_COMMIT
-              if ($LASTEXITCODE) { throw 'Private fetch failed' }
-              & git -C "$private/source" -c core.hooksPath=NUL -c core.autocrlf=false -c core.eol=lf checkout -q --detach FETCH_HEAD
-              if ($LASTEXITCODE) { throw 'Private checkout failed' }
-              $commit = & git -C "$private/source" rev-parse HEAD
-              if ($LASTEXITCODE -or $commit -cne $env:SOURCE_COMMIT) { throw 'Source commit differs' }
-              foreach ($line in [IO.File]::ReadAllLines("$private/source/CI-SOURCE.SHA256SUMS")) {
-                if ($line -cnotmatch '^([a-f0-9]{64})  ([^\\]+)$') { throw 'Invalid source manifest' }
-                $digest=$Matches[1]; $name=$Matches[2]
-                if ($name.StartsWith('/') -or $name.Contains(':') -or $name.Split('/') -contains '..') { throw 'Unsafe source row' }
-                $observed = (Get-FileHash -LiteralPath "$private/source/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
-                if ($observed -cne $digest) { throw 'Private source bytes differ' }
-              }
-              Write-NewPrivateText "$private/source-admitted" $env:SOURCE_COMMIT
-            } *> "$private/source-bootstrap.log"
-          } catch { $_ | Out-File -LiteralPath "$private/source-bootstrap.log" -Append; exit 2 }
-          finally { Remove-Item -LiteralPath "$private/key" -Force -ErrorAction SilentlyContinue }
-      - name: Download encrypted prepared driver package
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      - name: Restore stock FreeBSD media
+        id: freebsd_media_cache
+        if: matrix.os == 'freebsd'
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        continue-on-error: true
+        timeout-minutes: 2
         with:
-          name: encrypted-windows-preflight-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/build-input
-      - name: Prepare in-place Firefox fixture and run real browser inspect apply repeat
+          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
+          key: freebsd-stock-qcow2-${{ matrix.freebsd_rootfs == 'zfs' && 'cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1' || 'a5289152ea5b9145cc89e58ab83186173e43b5ba1ed4e9358b8f357241476229' }}
+      - name: Seed and score on the signed stock FreeBSD 15.1 image
+        id: freebsd_stock
+        if: matrix.os == 'freebsd'
         env:
-          FIXTURE_INPUT_KEY: ${{ secrets.FIXTURE_INPUT_KEY }}
-        shell: pwsh
+          CYPAT_SCORE_FREEBSD_MEDIA_CACHE: '1'
+        shell: bash
         run: |
-          $ErrorActionPreference = 'Stop'
-          $private = $env:CYPAT_PRIVATE_ROOT
-          if ($private -cne ('C:\Windows\Temp\bm-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)) { throw 'Browser private root differs from this run attempt' }
-          foreach ($path in @('C:\', 'C:\Windows', 'C:\Windows\Temp', $private, "$private/source", "$private/browser-result",
-              "$private/source/tools", "$private/source/tools/ci", "$private/source/ci", "$private/source-admitted",
-              "$private/source/tools/ci/windows_preflight.py", "$private/source/ci/Invoke-HostedBrowserMaintenance.ps1")) {
-            if ([IO.File]::GetAttributes($path) -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device)) { throw 'Linked/device browser input refused before key write' }
-          }
-          $keyState = @{ created = $false }
-          try {
-            & {
-              $keyBytes = [Text.UTF8Encoding]::new($false).GetBytes(($env:FIXTURE_INPUT_KEY -replace "`r`n", "`n").TrimEnd([char[]]"`r`n") + "`n")
-              $keyStream = [IO.File]::Open("$private/fixture-input.pem", 'CreateNew', 'Write', 'None')
-              $keyState.created = $true
-              try { $keyStream.Write($keyBytes, 0, $keyBytes.Length) } finally { $keyStream.Dispose() }
-              $keyBytes = $null
-              Remove-Item Env:FIXTURE_INPUT_KEY
-              & python -I -B "$private/source/tools/ci/windows_preflight.py" open-envelope --kind bundle --input "$private/build-input/payload.cms" --key "$private/fixture-input.pem" --output "$private/bundle" --openssl 'C:\Program Files\Git\usr\bin\openssl.exe' *> "$private/input-open.log"
-              if ($LASTEXITCODE) { throw 'Prepared input envelope admission failed' }
-              Remove-Item -LiteralPath "$private/fixture-input.pem" -Force
-              # Explicit in-place CI setup retains runner Firefox and its
-              # service. Native host/source admission must finish first.
-              & "$private/source/ci/Invoke-HostedBrowserMaintenance.ps1" -PrivateRoot $private -BundleScope $env:CYPAT_BUNDLE_SCOPE -PrepareInPlaceFirefoxUpdateFixture -RequireFirefoxVersionChange
-            } *> "$private/stage.log"
-          } catch { $_ | Out-File -LiteralPath "$private/stage-error-wrapper.log"; exit 2 }
-          finally { if ($keyState.created) { Remove-Item -LiteralPath "$private/fixture-input.pem" -Force -ErrorAction SilentlyContinue } }
-      - name: Seal full browser originals payloads and failures
-        if: always()
-        shell: pwsh
+          bash "$CYPAT_SCORE_ROOT/source/tools/round2/scoring/run-freebsd-stock.sh"
+      - name: Cache verified stock FreeBSD media
+        if: matrix.os == 'freebsd' && steps.freebsd_stock.outputs.stock-media-save == 'true' && (matrix.fixture == '' || matrix.fixture == 'original' || matrix.fixture == 'package-directory-modes')
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        continue-on-error: true
+        timeout-minutes: 3
+        with:
+          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
+          key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
+      - name: Publish the score only
+        if: always() && !cancelled()
+        env:
+          FREEBSD_STOCK_OUTCOME: ${{ steps.freebsd_stock.outcome }}
+        shell: bash
         run: |
-          $ErrorActionPreference = 'Stop'
-          $private = $env:CYPAT_PRIVATE_ROOT
-          if ($private -cne ('C:\Windows\Temp\bm-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)) { throw 'Browser sealing root differs from this run attempt' }
-          foreach ($path in @('C:\', 'C:\Windows', 'C:\Windows\Temp', $private, "$private/browser-result")) {
-            $attributes = [IO.File]::GetAttributes($path)
-            if ($attributes -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device) -or
-                -not ($attributes -band [IO.FileAttributes]::Directory)) { throw 'Require ordinary browser sealing directories' }
-          }
-          try {
-            & {
-              $certificate = [Convert]::FromBase64String($env:REPORT_CERT_BASE64)
-              $certificatePath = Join-Path $private 'report.crt'
-              $certificateStream = [IO.File]::Open($certificatePath, 'CreateNew', 'Write', 'None')
-              try { $certificateStream.Write($certificate, 0, $certificate.Length) } finally { $certificateStream.Dispose() }
-              $sealer = "$private/source/ci/Seal-HostedBrowserMaintenance.ps1"
-              $sealed = $false
-              if ((Test-Path -LiteralPath "$private/source-admitted" -PathType Leaf) -and
-                  (Test-Path -LiteralPath $sealer -PathType Leaf)) {
-                try {
-                  foreach ($path in @("$private/source", "$private/source/ci", $sealer, "$private/source-admitted")) {
-                    if ([IO.File]::GetAttributes($path) -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Device)) { throw 'Linked/device browser sealer refused' }
-                  }
-                  if ([IO.File]::ReadAllText("$private/source-admitted") -cne $env:SOURCE_COMMIT) { throw 'Browser source admission differs' }
-                  & $sealer -PrivateRoot $private -CertificatePath $certificatePath
-                  $sealed = $true
-                } catch { $_ | Out-File -LiteralPath "$private/sealer-error.log" }
-              }
-              if (-not $sealed) {
-                # Bootstrap or complete sealing failed. Keep every original and
-                # seal bounded failure diagnostics using only installed runtimes.
-                $null = [IO.Directory]::CreateDirectory("$private/browser-sealed")
-                $fallback = "$private/browser-seal-failure"
-                $null = [IO.Directory]::CreateDirectory($fallback)
-                [IO.File]::WriteAllText("$fallback/sealing-failure.txt", "Source/bootstrap or complete evidence sealing failed; no browser acceptance. Originals remain in the private job tree.`n")
-                foreach ($name in @('source-bootstrap.log', 'stage.log', 'stage-error-wrapper.log', 'input-open.log', 'sealer-error.log')) {
-                  $path = "$private/$name"
-                  if ([IO.File]::Exists($path)) {
-                    $stream = [IO.File]::OpenRead($path)
-                    try {
-                      $null = $stream.Seek([Math]::Max(0L, $stream.Length - 2MB), [IO.SeekOrigin]::Begin)
-                      $buffer = [byte[]]::new(2MB)
-                      $count = 0
-                      while ($count -lt $buffer.Length) {
-                        $read = $stream.Read($buffer, $count, $buffer.Length - $count)
-                        if (-not $read) { break }
-                        $count += $read
-                      }
-                      $tail = [byte[]]::new($count)
-                      [Array]::Copy($buffer, $tail, $count)
-                      [IO.File]::WriteAllBytes("$fallback/$name", $tail)
-                    } finally { $stream.Dispose() }
-                  }
-                }
-                [IO.Compression.ZipFile]::CreateFromDirectory($fallback, "$private/browser-sealed/failure.zip")
-                & 'C:\Program Files\Git\usr\bin\openssl.exe' cms -encrypt -binary -aes-256-gcm -outform DER -in "$private/browser-sealed/failure.zip" -out "$private/browser-sealed/failure.cms.partial" $certificatePath
-                if ($LASTEXITCODE) { throw 'Failure encryption failed' }
-                [IO.File]::Move("$private/browser-sealed/failure.cms.partial", "$private/browser-sealed/report.cms")
-                exit 2
-              }
-            } *> "$private/browser-maintenance-sealing.log"
-          } catch { $_ | Out-File -LiteralPath "$private/browser-maintenance-sealing.log" -Append; exit 2 }
-      - name: Upload encrypted nativeServer browser maintenance evidence
-        if: always()
+          set -euo pipefail
+          root=${CYPAT_SCORE_ROOT:-$RUNNER_TEMP/cypat-score-unverified}
+          mkdir -p "$root"
+          if [[ -f $root/source/tools/round2/scoring/result.py ]]; then
+            options=()
+            if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
+            if [[ -n $CYPAT_SCORE_FIXTURE ]]; then options+=(--fixture "$CYPAT_SCORE_FIXTURE"); fi
+            if [[ -n $CYPAT_SCORE_FREEBSD_ROOTFS ]]; then options+=(--freebsd-rootfs "$CYPAT_SCORE_FREEBSD_ROOTFS"); fi
+            if [[ $CYPAT_SCORE_OS == freebsd ]]; then options+=(--freebsd-stock-outcome "${FREEBSD_STOCK_OUTCOME:-}"); fi
+            python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
+          else
+            printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
+              "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" > "$root/score.json"
+          fi
+          echo "CYPAT_SCORE_JSON=$root/score.json" >> "$GITHUB_ENV"
+      - name: Upload score JSON
+        if: always() && !cancelled()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: encrypted-nativeServer-browser-maintenance-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_PRIVATE_ROOT }}/browser-sealed/report.cms
-          retention-days: 3
-          compression-level: 0
+          name: score-${{ matrix.artifact_key }}-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_SCORE_JSON }}
           if-no-files-found: error
-
+          retention-days: 7
+      - name: Seal Debian failure diagnostics
+        if: always() && !cancelled() && matrix.os == 'debian12' && matrix.variant == 'candidate'
+        id: debian_diagnostics
+        env:
+          REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          [[ -n ${CYPAT_SCORE_ROOT:-} ]] || exit 0
+          cd "$CYPAT_SCORE_ROOT"
+          [[ -s debian-private-diagnostics.json && ! -L debian-private-diagnostics.json ]] || exit 0
+          [[ $(stat -c %s -- debian-private-diagnostics.json) -le 32768 ]]
+          exec >debian-diagnostic-sealing.log 2>&1
+          printf '%s' "$REPORT_CERT_BASE64" | base64 -d >debian-diagnostic-report.crt
+          jq -n --arg source "$QUEUED_SOURCE_SHA256" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" \
+            --slurpfile diagnostics debian-private-diagnostics.json \
+            '{source_sha256:$source,action_id:$run,run_attempt:$attempt,diagnostics:$diagnostics[0]}' >debian-diagnostic-report.json
+          openssl cms -encrypt -binary -aes-256-gcm -outform DER -in debian-diagnostic-report.json \
+            -out "$RUNNER_TEMP/debian-diagnostics.cms" debian-diagnostic-report.crt
+          printf 'sealed=yes\n' >>"$GITHUB_OUTPUT"
+      - name: Upload encrypted Debian failure diagnostics
+        if: always() && !cancelled() && steps.debian_diagnostics.outputs.sealed == 'yes'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-debian-diagnostics-${{ matrix.fixture && format('{0}-', matrix.fixture) || '' }}${{ github.run_attempt }}
+          path: ${{ runner.temp }}/debian-diagnostics.cms
+          if-no-files-found: error
+          retention-days: 3
