@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock split-filesystem witness round2-score 20261124T202637Z-97cbfede5b0c
+run-name: FreeBSD stock split-filesystem witness round2-score 20261124T203002Z-d77012487fc2
 on:
   push:
     branches: [automation]
@@ -17,8 +17,8 @@ jobs:
         include: [{"os":"freebsd","variant":"candidate","freebsd_filesystems":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'f37dcc790ce49a3c909102c3d8e40ed6873d9efd'
-      QUEUED_SOURCE_SHA256: 'a0a5a35539d8299e45453532da9463d4da3bf15f76ea551d082e4fabc17d7976'
+      SOURCE_COMMIT: 'b363302abff55cc1c25fd7f34552de81528e089b'
+      QUEUED_SOURCE_SHA256: '344293661753a9e0f703c6e7c29c7b4bc65a820aa9c3c0ee3e0873939ee0f1f4'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
