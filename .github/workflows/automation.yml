@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261124T092813Z-cd7ae8b0b949
+run-name: One-click Server score with a malformed Desktop README round2-score-server-malformed 20261124T092826Z-c8775659ae02
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"server2022","variant":"candidate","fixture":"original","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"server2022","variant":"candidate","fixture":"alternate","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"server_roster":true,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":2160,"minutes":55,"fixture":"","artifact_key":"server2022-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":true,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'de7722fe2d8c2a5d014e032739cefd6644865754'
-      QUEUED_SOURCE_SHA256: 'de299f2e93e4bba0cd54182b37dc179736ef07fed87397c98c9cef6b85b44f73'
+      SOURCE_COMMIT: '32eb97ba8fd7a8a7fcf0981bc435e45f0d7073a6'
+      QUEUED_SOURCE_SHA256: 'a5a0859082f71923fe59905669e0e464d8881329ae6b27d230f72b4aeff33181'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
