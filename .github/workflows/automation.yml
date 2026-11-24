@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock fixture (alternate) round2-score 20261124T070223Z-522e659813a2
+run-name: FreeBSD stock fixture (full-stock-lynis) round2-score 20261124T070618Z-d65af0e66cd8
 on:
   push:
     branches: [automation]
@@ -14,11 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","fixture":"alternate","freebsd_roster":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","fixture":"full-stock-lynis","runner":"ubuntu-24.04","seconds":420,"minutes":18,"artifact_key":"freebsd-candidate-full-stock-lynis","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '14332a4ae43cbf63d292ff2fec77d12f5809eca6'
-      QUEUED_SOURCE_SHA256: '0df30c76a8d62a3d8feb5888fa153289756c05be40e1bbba9287e6dbc5dab6f7'
+      SOURCE_COMMIT: 'b713cc2f4da063d755a58a5a50a07083f5b4e9a1'
+      QUEUED_SOURCE_SHA256: 'c618714d277d0043b2aaf3b13af2f454331c292c3fc568869f04677f9fa14d4e'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
