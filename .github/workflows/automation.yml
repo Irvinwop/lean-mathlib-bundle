@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: Debian one-click packaged FTP cleanup witness round2-score-debian-ftp 20261124T074305Z-a6f6e069e391
+run-name: Debian one-click packaged FTP cleanup witness round2-score-debian-ftp 20261124T074504Z-5e277faf5107
 on:
   push:
     branches: [automation]
@@ -17,8 +17,8 @@ jobs:
         include: [{"os":"debian12","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"debian12-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":true,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'd8ba4c47b4818d174977d5c8678174e02e5d55ea'
-      QUEUED_SOURCE_SHA256: 'da6ba28abfde97fa075a7adbb3b18c8644d62b4b3758ca4dbba61cc194afe1d0'
+      SOURCE_COMMIT: '28d31456a1b42683a3c0eb6c5851f573fe13bb10'
+      QUEUED_SOURCE_SHA256: '286da13fb7f02b453a288996bb8717edf22057bdfc0b63779f89a3c413c1e10d'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
