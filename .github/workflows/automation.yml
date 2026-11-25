@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock fixture (samba-reader) round2-score 20261125T043403Z-77e45f6a3b32
+run-name: FreeBSD stock fixture (samba-reader) round2-score 20261125T043815Z-982e7c377ed8
 on:
   push:
     branches: [automation]
@@ -17,8 +17,8 @@ jobs:
         include: [{"os":"freebsd","variant":"candidate","fixture":"samba-reader","runner":"ubuntu-24.04","seconds":660,"minutes":18,"artifact_key":"freebsd-candidate-samba-reader","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '3b9a3c395dd54e9df09dd3c9efd5bb14a7cd2143'
-      QUEUED_SOURCE_SHA256: '6cae4fc97650e965018d6c2649c2ec71c48265f53c1e0b479f67d5211af846ba'
+      SOURCE_COMMIT: 'a7d266be1adac7d50be82f81b9ed38fb728cef6a'
+      QUEUED_SOURCE_SHA256: '17d8594538947a4fe20b2dfad6607b936488b1956802d1c0239c331cf603be11'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
