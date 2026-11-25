@@ -1,5 +1,5 @@
 name: Automated checks
-run-name: FreeBSD 15.1 file-inventory compile and private export round2-freebsd-build 20261125T161222Z-7b13b4594075
+run-name: Round2 Debian12 build and isolated launcher checks round2-debian-build 20261125T163608Z-5f4a2a8b5568
 on:
   push:
     branches: [automation]
@@ -16,13 +16,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"bundle_scope":"","stock_bootstrap":false,"apply_first":false,"windows_parent_cache":"","lane":"round2-freebsd-build","target":"round2-freebsd-build","name":"FreeBSD sealed runtime and inventory source overlay","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":25}]
+        include: [{"bundle_scope":"","stock_bootstrap":false,"apply_first":false,"windows_parent_cache":"","lane":"round2-debian-build","target":"round2-debian-build","name":"Debian12 compile, parser and isolated launcher","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":25}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '9b08d27623c855a7885aa0b6791c2caedd39a833'
+      SOURCE_COMMIT: '55b365698912b11281a620880865d6df6860cf79'
       TARGET: '${{ matrix.target }}'
       REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
-      FIXTURE_CERT_BASE64: ''
+      FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
       CYPAT_PRIVATE_ROOT: /tmp/cypat-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.lane }}
     steps:
       - name: Download private input
@@ -120,6 +120,70 @@ jobs:
         with:
           path: ${{ runner.temp }}/cypat-freebsd-15.1-amd64-base.txz
           key: freebsd-15.1-amd64-base-3768988b151c20f965679062b065c63a977d6bbb9f47fd83695ec2c40790c18f
+      - name: Seal one executable for an independent hosted check
+        if: matrix.target == 'round2-debian-build' || matrix.target == 'round2-server-build' || matrix.target == 'round2-freebsd-build'
+        id: score_input
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          private="$CYPAT_PRIVATE_ROOT"
+          report="$private/report"
+          exec >>"$report/bootstrap.log" 2>&1
+          [[ $(cat "$report/exit-code") == 0 ]]
+          case "$TARGET" in
+            round2-debian-build) artifact="$report/round2/artifacts/nyascripts-round2-debian12" ;;
+            round2-server-build) artifact="$report/round2/artifacts/nyascripts-round2-server2022.exe" ;;
+            round2-freebsd-build) artifact="$report/compiled-freebsd/nyascripts-freebsd" ;;
+          esac
+          [[ -s "$artifact" && ! -L "$artifact" ]]
+          bytes=$(stat -c %s -- "$artifact")
+          (( bytes > 0 && bytes <= 536870912 ))
+          sum=$(sha256sum -- "$artifact")
+          mkdir -m 700 "$private/score-input"
+          printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d >"$private/score-input.crt"
+          ciphertext="$private/score-input/input.cms"
+          openssl cms -encrypt -binary -aes-256-gcm -outform DER -in "$artifact" \
+            -out "$ciphertext" "$private/score-input.crt"
+          cipher_bytes=$(stat -c %s -- "$ciphertext")
+          (( cipher_bytes > 0 && cipher_bytes <= 536870912 ))
+          cipher_sum=$(sha256sum -- "$ciphertext")
+          jq -n --arg file "${artifact##*/}" --arg sha "${sum%% *}" --argjson bytes "$bytes" \
+            --arg cipher "${cipher_sum%% *}" --argjson cipher_bytes "$cipher_bytes" \
+            --arg repo "$GITHUB_REPOSITORY" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" \
+            --arg public "$GITHUB_SHA" --arg commit "$SOURCE_COMMIT" \
+            --arg source "$(cat "$report/source/source.sha256")" \
+            '[{id:"candidate",$file,sha256:$sha,$bytes,ciphertext_sha256:$cipher,ciphertext_bytes:$cipher_bytes,
+               actions:{$repo,run_id:$run,$attempt,public_commit:$public,source_commit:$commit,source_sha256:$source}}]' \
+            >"$private/score-input.json"
+          printf 'sealed=yes\n' >>"$GITHUB_OUTPUT"
+      - name: Upload the sealed executable by artifact ID
+        if: steps.score_input.outputs.sealed == 'yes'
+        id: score_upload
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: sealed-score-input-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/score-input/input.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+      - name: Bind the executable artifact to the private build report
+        if: steps.score_upload.outputs.artifact-id != ''
+        continue-on-error: true
+        env:
+          SCORE_ARTIFACT_ID: ${{ steps.score_upload.outputs.artifact-id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          private="$CYPAT_PRIVATE_ROOT"
+          exec >>"$private/report/bootstrap.log" 2>&1
+          [[ $SCORE_ARTIFACT_ID =~ ^[1-9][0-9]{0,19}$ ]]
+          jq --arg id "$SCORE_ARTIFACT_ID" '.[0].actions.artifact_id=$id' \
+            "$private/score-input.json" >"$private/score-input.bound.json"
+          mv -- "$private/score-input.bound.json" "$private/report/score-input.json"
       - name: Pin encrypted Round2 Windows input
         if: always() && matrix.target == 'round2-build'
         id: round2_input
