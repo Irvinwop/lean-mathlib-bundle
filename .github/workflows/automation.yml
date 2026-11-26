@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261126T090107Z-091e33032bcb
+run-name: One-click score with both README rosters round2-score-rosters 20261126T090523Z-a354cd115e44
 on:
   push:
     branches: [automation]
@@ -15,11 +15,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"debian12","variant":"candidate","fixture":"original","runner":"ubuntu-24.04","seconds":2400,"minutes":55,"artifact_key":"debian12-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"debian12","variant":"candidate","fixture":"alternate","runner":"ubuntu-24.04","seconds":2400,"minutes":55,"artifact_key":"debian12-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":true,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"server2022","variant":"candidate","fixture":"original","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"server2022","variant":"candidate","fixture":"alternate","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":true,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '07ea213ba857252ef2b5b405174673593f957772'
-      QUEUED_SOURCE_SHA256: '0eceefcde2f1e52829c19c3bb762ede80ea407866698d647c8704b3f1726a897'
+      SOURCE_COMMIT: '80b17dc2745e36603b38da4140b48431d0399eac'
+      QUEUED_SOURCE_SHA256: '4463d3e233cf3e4cffeea5330a2fc43af6a9ba567a99c210a5b3ea4b1f4d7ad6'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
