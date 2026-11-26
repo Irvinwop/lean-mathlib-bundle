@@ -1,237 +1,265 @@
-name: Easy-point scoring
-run-name: One-click Server score with an alternate README and IIS port round2-score-server-roster 20261126T103929Z-bf35476f8186
+name: Automated checks
+run-name: Mint21 compile and private export build-mint21 20261126T105851Z-39e89319b3cd
 on:
   push:
     branches: [automation]
     paths: [.github/workflows/automation.yml]
 permissions:
   contents: read
-  actions: read
 jobs:
-  score_harness:
-    name: ${{ matrix.debian_apt && 'Verify Debian authenticated package maintenance' || matrix.server_iis_seed_only && 'Verify Server alternate IIS fixture' || format('Score {0} {1}{2}', matrix.os, matrix.variant, matrix.fixture && format(' ({0})', matrix.fixture) || '') }}
-    runs-on: ${{ matrix.runner }}
-    timeout-minutes: ${{ matrix.minutes }}
+  checks:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    outputs:
+      round2_input_sha256: ${{ steps.round2_input.outputs.sha256 }}
+    timeout-minutes: ${{ matrix.timeout }}
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"server2022","variant":"candidate","runner":"windows-2022","seconds":2160,"minutes":55,"fixture":"","artifact_key":"server2022-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":true,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"bundle_scope":"preserve","stock_bootstrap":false,"apply_first":false,"windows_parent_cache":"","lane":"build-mint21","target":"build-mint21","name":"Mint21 current-source compile (no guest validation)","artifact":"encrypted-report","native":true,"return_bundle":false,"timeout":45}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: 'a8c015deada8c3d2643bcd2082611e67b09fc5c3'
-      QUEUED_SOURCE_SHA256: '7aea2bd70c4c0af4fd5502f5dfc51737e93e95acae35920caebd7b3af4228072'
-      CYPAT_SCORE_OS: ${{ matrix.os }}
-      CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
-      CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
-      CYPAT_SCORE_DEBIAN_ROSTER: ${{ matrix.debian_roster && '1' || '0' }}
-      CYPAT_SCORE_DEBIAN_MALFORMED: ${{ matrix.debian_malformed && '1' || '0' }}
-      CYPAT_SCORE_DEBIAN_FTP: ${{ matrix.debian_ftp && '1' || '0' }}
-      CYPAT_SCORE_DEBIAN_APT: ${{ matrix.debian_apt && '1' || '0' }}
-      CYPAT_SCORE_SERVER_ROSTER: ${{ matrix.server_roster && '1' || '0' }}
-      CYPAT_SCORE_SERVER_MALFORMED: ${{ matrix.server_malformed && '1' || '0' }}
-      CYPAT_SCORE_SERVER_IIS_SEED_ONLY: ${{ matrix.server_iis_seed_only && '1' || '0' }}
-      CYPAT_SCORE_MINT_WITNESS: ${{ matrix.mint_witness && '1' || '0' }}
-      CYPAT_SCORE_MINT_ROSTER: ${{ matrix.mint_roster && '1' || '0' }}
-      CYPAT_SCORE_MINT_REVIEWED: ${{ matrix.mint_reviewed && '1' || '0' }}
-      CYPAT_SCORE_FREEBSD_QUARANTINE: ${{ (matrix.freebsd_quarantine == 'conffiles' || matrix.freebsd_quarantine == 'conffile-metadata' || matrix.freebsd_quarantine == 'acl-observation') && matrix.freebsd_quarantine || (matrix.freebsd_quarantine && '1' || '0') }}
-      CYPAT_SCORE_FREEBSD_ROSTER: ${{ matrix.freebsd_roster && '1' || '0' }}
-      CYPAT_SCORE_FREEBSD_MALFORMED: ${{ matrix.freebsd_malformed && '1' || '0' }}
-      CYPAT_SCORE_FREEBSD_FILESYSTEMS: ${{ matrix.freebsd_filesystems && '1' || '0' }}
-      CYPAT_SCORE_FREEBSD_ROOTFS: ${{ matrix.freebsd_rootfs }}
-      CYPAT_SCORE_FREEBSD_CATALOG: ${{ matrix.freebsd_catalog }}
-      CYPAT_SCORE_FIXTURE: ${{ matrix.fixture }}
+      SOURCE_COMMIT: 'd5f771c293b0af3ecc33078c718fbd57c390c211'
+      TARGET: '${{ matrix.target }}'
+      REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
+      FIXTURE_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFVENDQW5tZ0F3SUJBZ0lVWXB3MksyOXRUdDQ5cHgxUWY0MlFHZ0ttbC93d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05abWw0ZEhWeVpTMXBibkIxZERBZUZ3MHlOakV3TWpRd05UUTBNVFphRncwegpOakV3TWpFd05UUTBNVFphTUJneEZqQVVCZ05WQkFNTURXWnBlSFIxY21VdGFXNXdkWFF3Z2dHaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJqd0F3Z2dHS0FvSUJnUUR2Ny8vQVNoa0VoY2lKSi9nQkU5UmVqdUJrSTZMOTFOSSsKckl1NDcwSnRkdUtqZ0o0M0t5ZW04YTN2cUd6cW9ob3Zac1oycWc5aWFwUU1NUllRVmdVNnVFQXJSQWpjMHdVdgpZNVRkckZSTTFmS2pibUdmallkaHY1d0x2OVNOcm9LdXg4THg5VFRVczNVQytlamhpZkpqaWVpY09jOElac0N6ClVNbWJ3dzdPai9wVXdUb25HazRXZ1BvSTFZZkVXNjExOHFsbk1Fa0Z5c1AxRk85ak4rWjJFYVhmUkJ1a0NMdEUKY1lMQ2VHaXdqQVVLUjBwZTkvN3VvcUNKUy9sTnIwbzlGZE40QnI1QVEzNkQvbHhOdWYzeHBtcHNpajkrRTJTVQpjRUxyeHFGQnNKa0FSYUdEdlgzVno0cy9Ec1VZanBJOTllRzVqWUJlQ2FmR0s2UGJUb2tRbk5ya1hlOHE0TU5rCjJEN0tKQ2xkL215VENWekhNUjQ4OW9lNG9KK2RaZXdZTjl2UjI0eXVEaUlKWE53RUpLdnhUQjZNVWgrTEx5WEwKTm5DM1QrajRwSS9GZHpSRHZUREpzSEFmeDhHV3BMVDNmZFJSWSs2VXQ2VW5rN1o2OVN3dWpwYzVEWUVZaGxwUgo3OEtQK1gvTXR2Rm5wNDNVay81RUdnV01JSTBla0JFQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZHUVpPQzJNCk9XaTNFQmU4N3ZGYk9ZdE0wUVVnTUI4R0ExVWRJd1FZTUJhQUZHUVpPQzJNT1dpM0VCZTg3dkZiT1l0TTBRVWcKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0dCQUJFNjZJUURtNThacFhQbQpQSmRPbzZLQThLanVYUTJIZlg1Z2pyWFpzVHFGVUMxNll0S1o2aG9kbnA5K3hlQXVCR29hTlN6UlJ2c0VxS0RhCmNTa1J2N3FaYVQ0VUpRQ3JVMHc3YVJDRWd4aUJWMzR3eitYSitPMUtBeXZWc2hpbEZDekNaZnVjWWVlbVg1V1MKQVpnTU9PZkZpaWlLdEhrKzBuTzI3YU55S3Z1YWFEblJ4aWdMOXBvdG9UaEdhdStibWlSOWErTGVVWWZKMnowSgpDYmFWbFlsZ1gyRDhHZ0ZwU2tBYU9nQlFRTFJ0aE8zOFJSMVVJU1BqTnpucWhKdUkrUUNBQW8rVGpzV3BJU0lsCitqOGo0VGZRUXJXS08xNVdvdmt4YUZ3UXFlWmlMTnJVK2NNejRJRTYrU2cwdFBUNmhPTzBrN0NrbkxERE1scUcKandxcjlWSnFseElpeWpaYUl4cDZLMDBVWXZZalp5RUo4b2U3US9McXdieEFoSGtDSVgxV2RMS2lldnhLVmNjSApBSnlISGpSNHI3WE5oZitSS3pBcWRlTG1pcVdLWkd2cm04MGRpQkVUbXVXLzRtSzQ4bWpISk5OeUhHSTlqdDZ4CmpVSWNCRVdsUXdxUjBkUHpjU1JudGhkNStvM3VwWmxWQlNhRytiazVKcXp4Yk0xQStRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
+      CYPAT_PRIVATE_ROOT: /tmp/cypat-ci-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.lane }}
     steps:
-      - name: Check out the pinned private source
+      - name: Download private input
         env:
           SOURCE_KEY: ${{ secrets.FIXTURE_SOURCE_KEY }}
         shell: bash
         run: |
-          set -euo pipefail
-          [[ $RUNNER_ENVIRONMENT == github-hosted ]]
+          set +x
           umask 077
-          root=$(mktemp -d "$RUNNER_TEMP/cypat-score.XXXXXXXX")
-          if [[ $RUNNER_OS == Windows ]]; then root=$(cygpath -am "$root"); fi
-          echo "CYPAT_SCORE_ROOT=$root" >> "$GITHUB_ENV"
-          cd "$root"
-          mkdir source
-          exec >bootstrap.log 2>&1
-          printf '%s\n' "$SOURCE_KEY" >key
-          unset SOURCE_KEY
-          trap 'rm -f key known_hosts' EXIT
-          printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' >known_hosts
-          export GIT_CONFIG_NOSYSTEM=1 GIT_TERMINAL_PROMPT=0
-          export GIT_SSH_COMMAND="ssh -F none -i '$root/key' -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile='$root/known_hosts'"
-          git -C source init -q
-          git -C source fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git "$SOURCE_COMMIT"
-          git -C source -c core.hooksPath=/dev/null -c core.autocrlf=false checkout -q --detach FETCH_HEAD
-          test "$(git -C source rev-parse HEAD)" = "$SOURCE_COMMIT"
-          test "$(cat source/CI-SOURCE.sha256)" = "$QUEUED_SOURCE_SHA256"
-          (cd source; sha256sum --quiet --strict -c CI-SOURCE.SHA256SUMS)
-      - name: Verify the exact encrypted artifact
-        if: matrix.server_iis_seed_only == false
-        timeout-minutes: 8
-        env:
-          FIXTURE_INPUT_KEY: ${{ secrets.FIXTURE_INPUT_KEY }}
-          CYPAT_SCORE_ACTIONS_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$CYPAT_SCORE_ROOT"
-          phase=baseline
-          if [[ $CYPAT_SCORE_VARIANT == candidate ]]; then phase=candidate; fi
-          python -I -B source/tools/round2/scoring/fetch-input "$CYPAT_SCORE_OS" "$phase" inputs --id "$CYPAT_SCORE_VARIANT" >input.json 2>input.log
-      - name: Seed and score inside the Linux systemd container
-        if: matrix.os == 'debian12' || matrix.os == 'mint'
-        shell: bash
-        run: |
-          cd "$CYPAT_SCORE_ROOT"
-          status=0
-          if [[ $CYPAT_SCORE_OS == mint ]]; then
-            # Keep complete diagnostics in the private report. Only literal,
-            # bounded progress labels from the runner belong in public logs.
-            bash source/tools/round2/scoring/run-container.sh 2>&1 |
-              tee fixture.log |
-              awk '
-                /^Mint Apply [0-9][0-9]?[0-9]?[0-9]?s module (temporary_permissions|apt_config|account_file_permissions|accounts|password_defaults|pwquality|pwhistory|passwords|faillock|mint_samba|mint_shell_startup|files|ssh|mint_persistence|display_manager|mint_base_audit|audit|firewall|mint_unclaimed_setid|certificate_distrust|mint_prohibited_packages|package_integrity|openscap_remediation|mint_process_accounting|packages|linux_malware_scan)$/ ||
-                /^Mint Apply [0-9][0-9]?[0-9]?[0-9]?s inventory (archive comparison|installer comparison after (archive deadline|unavailable or deferred archives)|unexpected files|installer directory admission|archive permissions|installer file repair|archive content repair)$/ ||
-                /^Mint Apply [0-9][0-9]?[0-9]?[0-9]?s awaiting first admitted stage$/ ||
-                /^Mint Apply exited [0-9][0-9]?[0-9]? after [0-9][0-9]?[0-9]?[0-9]?s$/ { print; fflush() }
-              ' || status=$?
-          else
-            bash source/tools/round2/scoring/run-container.sh >fixture.log 2>&1 || status=$?
+          private="$CYPAT_PRIVATE_ROOT"
+          if [[ $TARGET == round2-debian-core ]]; then
+            # The native Debian driver requires runner ownership, not /tmp's
+            # root ownership. Keep guest disks beside report, never inside it.
+            mkdir -m 700 -- "$private"
           fi
-          if [[ -f legacy-status.log ]]; then grep '^legacy-debian:' legacy-status.log | cut -c1-200 || true; fi
-          exit "$status"
-      - name: Seed and score on the standalone Windows Server runner
-        if: matrix.os == 'server2022'
-        shell: powershell
-        run: |
-          $ErrorActionPreference='Stop'
-          $arguments=@{}
-          if($env:CYPAT_SCORE_SERVER_IIS_SEED_ONLY -ceq '1'){$arguments.IisSeedOnly=$true}
-          try {
-            & (Join-Path $env:CYPAT_SCORE_ROOT 'source/tools/round2/scoring/run-server.ps1') @arguments *> (Join-Path $env:CYPAT_SCORE_ROOT 'fixture.log')
-          } catch {
-            $phase=Join-Path $env:CYPAT_SCORE_ROOT 'server-phase'
-            if(Test-Path -LiteralPath $phase){
-              $label=[IO.File]::ReadAllText($phase)
-              if($label -cmatch '\A(?:seed|before|apply|after)\z'){Write-Host "Server fixture stopped during $label."}
-            }
-            $category=[string]$_.CategoryInfo.Category
-            if($category -cmatch '\A[A-Za-z]{1,40}\z'){Write-Host "Server fixture error category: $category."}
-            throw ('Windows fixture stopped at controller line '+[string]$_.InvocationInfo.ScriptLineNumber)
-          }
-      - name: Restore stock FreeBSD media
-        id: freebsd_media_cache
-        if: matrix.os == 'freebsd'
+          mkdir -p "$private/report" "$private/source"
+          echo 125 > "$private/report/exit-code"
+          # Never print a private command's error, a source filename, or a log tail.
+          exec >"$private/report/bootstrap.log" 2>&1
+          printf '%s\n' "$SOURCE_KEY" > "$private/key"
+          trap 'rm -f "$private/key"' EXIT
+          # Published GitHub Ed25519 host key, independently fingerprint-checked
+          # on the trusted preparation machine. No unauthenticated API request.
+          printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > "$private/known_hosts"
+          git -C "$private/source" init -q
+          export GIT_SSH_COMMAND="ssh -i $private/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile=$private/known_hosts"
+          git -C "$private/source" fetch -q --depth=1 git@github.com:Irvinwop/Cypat.git "$SOURCE_COMMIT"
+          git -C "$private/source" -c core.hooksPath=/dev/null checkout -q --detach FETCH_HEAD
+          test "$(git -C "$private/source" rev-parse HEAD)" = "$SOURCE_COMMIT"
+          cd "$private/source"
+          while IFS= read -r -d '' row; do
+            mode=${row%% *}
+            path=${row#* }
+            [[ $mode =~ ^[0-7]{3,4}$ && -n $path && $path != /* && /$path/ != */../* && ! -L $path ]]
+            chmod "$mode" -- "$path"
+          done < CI-SOURCE.modes
+          sha256sum --check --strict CI-SOURCE.SHA256SUMS
+      - name: Restore FreeBSD vendor sysroot archive
+        id: freebsd_sysroot_cache
+        if: matrix.target == 'round2-freebsd-build'
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        continue-on-error: true
         timeout-minutes: 2
-        with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
-          key: freebsd-stock-qcow2-${{ matrix.freebsd_rootfs == 'zfs' && 'cb036758faf9241f766ccafd125c01788c44378cb98abf03926c48f640a56db1' || 'a5289152ea5b9145cc89e58ab83186173e43b5ba1ed4e9358b8f357241476229' }}
-      - name: Seed and score on the signed stock FreeBSD 15.1 image
-        id: freebsd_stock
-        if: matrix.os == 'freebsd'
-        env:
-          CYPAT_SCORE_FREEBSD_MEDIA_CACHE: '1'
-        shell: bash
-        run: |
-          bash "$CYPAT_SCORE_ROOT/source/tools/round2/scoring/run-freebsd-stock.sh"
-      - name: Cache verified stock FreeBSD media
-        if: matrix.os == 'freebsd' && steps.freebsd_stock.outputs.stock-media-save == 'true' && (matrix.fixture == '' || matrix.fixture == 'original' || matrix.fixture == 'package-directory-modes')
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         continue-on-error: true
-        timeout-minutes: 3
         with:
-          path: ${{ runner.temp }}/cypat-freebsd-stock${{ matrix.freebsd_rootfs == 'zfs' && '-zfs' || '' }}-media.qcow2
-          key: ${{ steps.freebsd_media_cache.outputs.cache-primary-key }}
-      - name: Publish the score only
-        if: always() && !cancelled()
+          path: ${{ runner.temp }}/cypat-freebsd-15.1-amd64-base.txz
+          key: freebsd-15.1-amd64-base-3768988b151c20f965679062b065c63a977d6bbb9f47fd83695ec2c40790c18f
+      - name: Run private test graph
         env:
-          FREEBSD_STOCK_OUTCOME: ${{ steps.freebsd_stock.outcome }}
+          FIXTURE_INPUT_KEY: ${{ matrix.native && secrets.FIXTURE_INPUT_KEY || '' }}
+          CYPAT_BUNDLE_SCOPE: ${{ matrix.bundle_scope }}
+          CYPAT_RETURN_TESTED_BUNDLE: ${{ matrix.return_bundle && '1' || '0' }}
+          CYPAT_PREPARE_STOCK_WINDOWS: ${{ matrix.stock_bootstrap && '1' || '0' }}
+          CYPAT_WINDOWS_PARENT_CACHE_MODE: ${{ matrix.windows_parent_cache }}
+          CYPAT_ROUND2_APPLY_FIRST: ${{ matrix.apply_first && '1' || '0' }}
+          CYPAT_FREEBSD_SYSROOT_CACHE: ${{ matrix.target == 'round2-freebsd-build' && format('{0}/cypat-freebsd-15.1-amd64-base.txz', runner.temp) || '' }}
         shell: bash
         run: |
-          set -euo pipefail
-          root=${CYPAT_SCORE_ROOT:-$RUNNER_TEMP/cypat-score-unverified}
-          mkdir -p "$root"
-          if [[ -f $root/source/tools/round2/scoring/result.py ]]; then
-            options=()
-            if [[ $CYPAT_SCORE_SERVER_IIS_SEED_ONLY == 1 ]]; then options+=(--server-iis-seed-only); fi
-            if [[ ${CYPAT_SCORE_DEBIAN_FTP:-0} == 1 ]]; then options+=(--debian-ftp); fi
-            if [[ ${CYPAT_SCORE_DEBIAN_APT:-0} == 1 ]]; then options+=(--debian-apt); fi
-            if [[ -n $CYPAT_SCORE_FIXTURE ]]; then options+=(--fixture "$CYPAT_SCORE_FIXTURE"); fi
-            if [[ -n $CYPAT_SCORE_FREEBSD_ROOTFS ]]; then options+=(--freebsd-rootfs "$CYPAT_SCORE_FREEBSD_ROOTFS"); fi
-            if [[ $CYPAT_SCORE_OS == freebsd ]]; then options+=(--freebsd-stock-outcome "${FREEBSD_STOCK_OUTCOME:-}"); fi
-            python -I -B "$root/source/tools/round2/scoring/result.py" finish "$root" "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" "${options[@]}"
-          else
-            printf '{"os":"%s","variant":"%s","status":"unverified","fixed":null,"total":null,"penalties":null,"items":[],"penalty_items":[]}\n' \
-              "$CYPAT_SCORE_OS" "$CYPAT_SCORE_VARIANT" > "$root/score.json"
+          set +x
+          private="$CYPAT_PRIVATE_ROOT"
+          exec >>"$private/report/bootstrap.log" 2>&1
+          if [[ -n $FIXTURE_INPUT_KEY ]]; then
+            umask 077
+            printf '%s\n' "$FIXTURE_INPUT_KEY" > "$private/fixture-input.pem"
+            export CYPAT_FIXTURE_KEY="$private/fixture-input.pem"
           fi
-          echo "CYPAT_SCORE_JSON=$root/score.json" >> "$GITHUB_ENV"
-      - name: Upload score JSON
-        if: always() && !cancelled()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+          unset FIXTURE_INPUT_KEY
+          trap 'rm -f "$private/fixture-input.pem"' EXIT
+          if [[ $CYPAT_WINDOWS_PARENT_CACHE_MODE == export || $TARGET == round2-build || $TARGET == round2-debian-core ]]; then
+            printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d > "$private/fixtures.crt"
+            export CYPAT_FIXTURE_CERTIFICATE="$private/fixtures.crt"
+          fi
+          cd "$private/source"
+          code=0
+          if [[ $TARGET == round2-debian-core ]]; then
+            RUNNER_TEMP="$private" /bin/bash ci/hosted-run "$TARGET" "$private/report" || code=$?
+          else
+            RUNNER_TEMP=/tmp /bin/bash ci/hosted-run "$TARGET" "$private/report" || code=$?
+          fi
+          printf '%s\n' "$code" > "$private/report/exit-code"
+          if [[ -f $private/report/windows-parent/receipt.json && -f $private/report.windows-parent/descriptor.json ]]; then
+            printf '%s\n' 'CYPAT_WINDOWS_PARENT_READY=1' >> "$GITHUB_ENV"
+          fi
+          if [[ $TARGET == round2-freebsd-build && $code == 0 && -f $CYPAT_FREEBSD_SYSROOT_CACHE &&
+                ! -L $CYPAT_FREEBSD_SYSROOT_CACHE ]] &&
+             printf '%s  %s\n' 3768988b151c20f965679062b065c63a977d6bbb9f47fd83695ec2c40790c18f \
+                "$CYPAT_FREEBSD_SYSROOT_CACHE" | sha256sum --check --status; then
+            printf '%s\n' 'CYPAT_FREEBSD_SYSROOT_READY=1' >> "$GITHUB_ENV"
+          fi
+          exit "$code"
+      - name: Cache verified FreeBSD vendor sysroot archive
+        if: matrix.target == 'round2-freebsd-build' && env.CYPAT_FREEBSD_SYSROOT_READY == '1' && steps.freebsd_sysroot_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        timeout-minutes: 3
+        continue-on-error: true
         with:
-          name: score-${{ matrix.artifact_key }}-${{ github.run_attempt }}
-          path: ${{ env.CYPAT_SCORE_JSON }}
-          if-no-files-found: error
-          retention-days: 7
-      - name: Seal Debian failure diagnostics
-        if: always() && !cancelled() && matrix.os == 'debian12' && matrix.variant == 'candidate'
-        id: debian_diagnostics
-        env:
-          REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
+          path: ${{ runner.temp }}/cypat-freebsd-15.1-amd64-base.txz
+          key: freebsd-15.1-amd64-base-3768988b151c20f965679062b065c63a977d6bbb9f47fd83695ec2c40790c18f
+      - name: Seal one executable for an independent hosted check
+        if: matrix.target == 'round2-debian-build' || matrix.target == 'round2-server-build' || matrix.target == 'round2-freebsd-build' || matrix.target == 'build-mint21'
+        id: score_input
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           umask 077
-          [[ -n ${CYPAT_SCORE_ROOT:-} ]] || exit 0
-          cd "$CYPAT_SCORE_ROOT"
-          [[ -s debian-private-diagnostics.json && ! -L debian-private-diagnostics.json ]] || exit 0
-          [[ $(stat -c %s -- debian-private-diagnostics.json) -le 32768 ]]
-          exec >debian-diagnostic-sealing.log 2>&1
-          printf '%s' "$REPORT_CERT_BASE64" | base64 -d >debian-diagnostic-report.crt
-          jq -n --arg source "$QUEUED_SOURCE_SHA256" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" \
-            --slurpfile diagnostics debian-private-diagnostics.json \
-            '{source_sha256:$source,action_id:$run,run_attempt:$attempt,diagnostics:$diagnostics[0]}' >debian-diagnostic-report.json
-          openssl cms -encrypt -binary -aes-256-gcm -outform DER -in debian-diagnostic-report.json \
-            -out "$RUNNER_TEMP/debian-diagnostics.cms" debian-diagnostic-report.crt
+          private="$CYPAT_PRIVATE_ROOT"
+          report="$private/report"
+          exec >>"$report/bootstrap.log" 2>&1
+          [[ $(cat "$report/exit-code") == 0 ]]
+          mkdir -m 700 "$private/score-input"
+          case "$TARGET" in
+            round2-debian-build) artifact="$report/round2/artifacts/nyascripts-round2-debian12" ;;
+            round2-server-build) artifact="$report/round2/artifacts/nyascripts-round2-server2022.exe" ;;
+            round2-freebsd-build) artifact="$report/compiled-freebsd/nyascripts-freebsd" ;;
+            build-mint21)
+              mint_dir="$report/compiled-mint21"
+              mint_stage="$private/score-input/standalone"
+              mkdir -m 700 "$mint_stage"
+              artifact="$mint_stage/nyascripts-mint21"
+              mint_pin=$(jq -er '.sha256 | strings | select(test("^[a-f0-9]{64}$"))' "$mint_dir/receipt.json")
+              /usr/bin/python3 -I -B "$private/source/tools/round2/pack-mint-single.py" \
+                "$mint_dir/cypat-mint21-amd64.zip" "$mint_pin" "$artifact" >"$private/mint-pack.json"
+              ;;
+          esac
+          [[ -s "$artifact" && ! -L "$artifact" ]]
+          bytes=$(stat -c %s -- "$artifact")
+          (( bytes > 0 && bytes <= 536870912 ))
+          sum=$(sha256sum -- "$artifact")
+          if [[ $TARGET == build-mint21 ]]; then
+            jq -ce --arg path "$artifact" --arg sha "${sum%% *}" --argjson bytes "$bytes" --arg zip "$mint_pin" '
+              select(.file==$path and .sha256==$sha and .bytes==$bytes and .source_zip_sha256==$zip and
+                     (.inner_launcher_sha256|test("^[a-f0-9]{64}$"))) |
+              {protocol:"cypat-hosted-mint-standalone-v1",file:"nyascripts-mint21",sha256,bytes,
+               source_zip_sha256,inner_launcher_sha256}' "$private/mint-pack.json" >"$mint_stage/receipt.json"
+            mv -T -- "$mint_stage" "$mint_dir/standalone"
+            artifact="$mint_dir/standalone/nyascripts-mint21"
+          fi
+          printf '%s' "$FIXTURE_CERT_BASE64" | base64 -d >"$private/score-input.crt"
+          ciphertext="$private/score-input/input.cms"
+          openssl cms -encrypt -binary -aes-256-gcm -outform DER -in "$artifact" \
+            -out "$ciphertext" "$private/score-input.crt"
+          cipher_bytes=$(stat -c %s -- "$ciphertext")
+          (( cipher_bytes > 0 && cipher_bytes <= 536870912 ))
+          cipher_sum=$(sha256sum -- "$ciphertext")
+          jq -n --arg file "${artifact##*/}" --arg sha "${sum%% *}" --argjson bytes "$bytes" \
+            --arg cipher "${cipher_sum%% *}" --argjson cipher_bytes "$cipher_bytes" \
+            --arg repo "$GITHUB_REPOSITORY" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" \
+            --arg public "$GITHUB_SHA" --arg commit "$SOURCE_COMMIT" \
+            --arg source "$(cat "$report/source/source.sha256")" \
+            '[{id:"candidate",$file,sha256:$sha,$bytes,ciphertext_sha256:$cipher,ciphertext_bytes:$cipher_bytes,
+               actions:{$repo,run_id:$run,$attempt,public_commit:$public,source_commit:$commit,source_sha256:$source}}]' \
+            >"$private/score-input.json"
           printf 'sealed=yes\n' >>"$GITHUB_OUTPUT"
-      - name: Upload encrypted Debian failure diagnostics
-        if: always() && !cancelled() && steps.debian_diagnostics.outputs.sealed == 'yes'
+      - name: Upload the sealed executable by artifact ID
+        if: steps.score_input.outputs.sealed == 'yes'
+        id: score_upload
+        continue-on-error: true
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: encrypted-debian-diagnostics-${{ matrix.fixture && format('{0}-', matrix.fixture) || '' }}${{ github.run_attempt }}
-          path: ${{ runner.temp }}/debian-diagnostics.cms
-          if-no-files-found: error
+          name: sealed-score-input-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/score-input/input.cms
           retention-days: 3
-      - name: Seal Mint update diagnostics
-        if: always() && !cancelled() && matrix.os == 'mint' && matrix.mint_roster == true && matrix.variant == 'candidate'
-        id: mint_updates
+          compression-level: 0
+          if-no-files-found: error
+      - name: Bind the executable artifact to the private build report
+        if: steps.score_upload.outputs.artifact-id != ''
+        continue-on-error: true
         env:
-          REPORT_CERT_BASE64: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVFekNDQW51Z0F3SUJBZ0lVZE9TMmhZYjRuNkIwTCt3RTZJU25CcENaYVFNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dURVhNQlVHQTFVRUF3d09abWw0ZEhWeVpTMXlaWEJ2Y25Rd0hoY05Nall4TURJek1Ea3hNakl3V2hjTgpNell4TURJd01Ea3hNakl3V2pBWk1SY3dGUVlEVlFRRERBNW1hWGgwZFhKbExYSmxjRzl5ZERDQ0FhSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU12c2YwY2g3QThZMXFWN013Y1lBeHdYbU9YMXVXQ1kKWkltY1BqUUd6dExpS202TVdaSDJmM3lxVTVXNmsvUUZ6SWdBVUlSZWVRMzEwR0xvL0VYQW5MNEFDUmpiK0lEZAozTDhodVpNZHNibTBzUmVwcTVFdVN6SHh1MmhlTU9MUjVpNHNLRktUM3IzWFA5eEI2blJEcTk5ZVBtZlIwMGxvCndmeXF4UnMrWjRJbXVlWVk5YTRMY0hYRm1WT0lMV2trdzk0YkI2SGpLcTVhczBHb21wb2krRVo0TlRlQTlXcFcKcTVmTlZzWmdhK2RCSE51UytLTC91aE9ob3o5a2tDeEZxd0phZnhZd3lBQU5TWThtcnFOUGlyR1I2a0tCRXhMNApaaFBXRFg4VWthWkp5NkpYSVNKZHNzTXVSaDR0OWtwVDd1cW5GbFd5bTRkcGZGQzNaV1RHU29QMGhmRHhVdkdLCjBTVUx1UW1zbHVhdmQxODYwa3lyQTJXT0NuUDZuMjg0dnM0OGUzOTZ6OXpsRkt4NXdyN1dVemxiWVZNODlYdmkKVkh6TDFjcmhHYzk1NFdDbnFNTFczUk8xa2psdE1aMGpYSVhOMS9XMytta3EvbWkwT3hQKzZoN3RpcFcyYzNGbApJUld1RnlVbS9uRWtsTmFhdXlHVGV5N01OcjlsYk8rTHJRSURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVU1a3J6CmMrM1NMNmE0VkdBSDRFaUxRK1ZsVGVRd0h3WURWUjBqQkJnd0ZvQVU1a3J6YyszU0w2YTRWR0FINEVpTFErVmwKVGVRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVlFQVl6NFdjcE12Sm1OUwpucHpxL2wwb1VZb1hEREh2TGdJOVczdVI5UVQ5R3hHclE0Z2kxNTFSbnZXeWJNT3o1Y3J5RGZOWXlrOUJTY0tRCkNRNG9wUkNKS29JSUVkSEVhMUJZTlBtbWZLQjNjYUp0ckYrYmdiUks2aFhPTWVONGJ4bzRaYmxCNXR4V1l0WSsKQXNlK3NhNHA1WEtXUE1GTkN5UlJhTGZqVjdKYlM1RE5ma0xTOUZJZjdqVzZaWlcwQnYzTWh2OE11ZGpEYU0rSwoxMjFxTzhNRGQvQXBlcVk3SWJEb25jR214SmpYUUlDcUtoczJVUnRqbE1iUVJMRnZObU0wYWN4R2NkMm9lS3BmCjRTdjR6Slh2V2srdFpXR1d3eGVWRTNDZnJjVHlZMG4zVWs5WWtwbUdqdUpJeU1USExuRlQxQzNmWElBVUJ5RzUKOS9vN3dFaDd5V0pzeGtYa0pRbTNUMU80S1phTm9TbDVzSWNrV0FmWEgrdEdMM2xrSUJnSUdyRUZUQ2t0VXk5bQpwNm10Umxyck9aSXBBY2c3Y0VreWNKWkRTOXZINlJYdHVRSlhLLzZSSUZXMWRkKzRWeEdWM1F4ejJhWkRUTG9IClFjaTFDVmNuU3hvdzJ4TkpGVng0ZlNnZThLbjAzcGJLZzVUMldjWk15WUNva1pNalQyMHUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo='
+          SCORE_ARTIFACT_ID: ${{ steps.score_upload.outputs.artifact-id }}
         shell: bash
         run: |
           set -euo pipefail
           umask 077
-          [[ -n ${CYPAT_SCORE_ROOT:-} ]] || exit 0
-          cd "$CYPAT_SCORE_ROOT"
-          [[ -s mint-private-update-diagnostics.json && ! -L mint-private-update-diagnostics.json ]] || exit 0
-          [[ $(stat -c %s -- mint-private-update-diagnostics.json) -le 16384 ]]
-          exec >mint-update-diagnostic-sealing.log 2>&1
-          printf '%s' "$REPORT_CERT_BASE64" | base64 -d >mint-update-report.crt
-          jq -n --arg source "$QUEUED_SOURCE_SHA256" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" \
-            --slurpfile diagnostics mint-private-update-diagnostics.json \
-            '{source_sha256:$source,action_id:$run,run_attempt:$attempt,diagnostics:$diagnostics[0]}' >mint-update-report.json
-          openssl cms -encrypt -binary -aes-256-gcm -outform DER -in mint-update-report.json \
-            -out "$RUNNER_TEMP/mint-updates.cms" mint-update-report.crt
-          printf 'sealed=yes\n' >>"$GITHUB_OUTPUT"
-      - name: Upload encrypted Mint update diagnostics
-        if: always() && !cancelled() && steps.mint_updates.outputs.sealed == 'yes'
+          private="$CYPAT_PRIVATE_ROOT"
+          exec >>"$private/report/bootstrap.log" 2>&1
+          [[ $SCORE_ARTIFACT_ID =~ ^[1-9][0-9]{0,19}$ ]]
+          jq --arg id "$SCORE_ARTIFACT_ID" '.[0].actions.artifact_id=$id' \
+            "$private/score-input.json" >"$private/score-input.bound.json"
+          mv -- "$private/score-input.bound.json" "$private/report/score-input.json"
+      - name: Pin encrypted Round2 Windows input
+        if: always() && matrix.target == 'round2-build'
+        id: round2_input
+        shell: bash
+        run: |
+          set +x
+          read -r pin _ < <(sha256sum -- "$CYPAT_PRIVATE_ROOT/report.round2-input/payload.cms")
+          [[ $pin =~ ^[a-f0-9]{64}$ ]]
+          printf 'sha256=%s\n' "$pin" >> "$GITHUB_OUTPUT"
+      - name: Upload encrypted Round2 Windows input
+        if: always() && matrix.target == 'round2-build' && steps.round2_input.outputs.sha256 != ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: encrypted-mint-updates-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/mint-updates.cms
-          if-no-files-found: error
+          name: encrypted-round2-windows-input-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.round2-input/payload.cms
           retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+      - name: Upload encrypted Windows parent chunks
+        if: always() && env.CYPAT_WINDOWS_PARENT_READY == '1'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: encrypted-windows-parent-${{ github.run_attempt }}
+          path: ${{ env.CYPAT_PRIVATE_ROOT }}/report.windows-parent/*.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+      - name: Encrypt private report
+        if: always()
+        shell: bash
+        run: |
+          set +x
+          umask 077
+          private="$CYPAT_PRIVATE_ROOT"
+          # Only the report public certificate is needed for sealing.
+          exec >"$RUNNER_TEMP/report-sealing.log" 2>&1
+          printf '%s' "$REPORT_CERT_BASE64" | base64 -d > "$private/report.crt"
+          tar -C "$private" -I 'zstd -T2 -3' -cf "$private/result.tar.zst" report
+          openssl cms -encrypt -binary -aes-256-gcm -outform DER \
+            -in "$private/result.tar.zst" -out "$RUNNER_TEMP/result.cms.partial" "$private/report.crt"
+          mv "$RUNNER_TEMP/result.cms.partial" "$RUNNER_TEMP/result.cms"
+      - name: Upload encrypted report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ${{ matrix.artifact }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/result.cms
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+      - name: Remove temporary private input
+        if: always()
+        shell: bash
+        run: |
+          # Fixtures deliberately leave read-only trees. Cleanup errors must
+          # never print their private paths into public Actions logs.
+          exec >"$RUNNER_TEMP/fixture-cleanup.log" 2>&1
+          private="$CYPAT_PRIVATE_ROOT"
+          if [[ -d $private ]]; then chmod -R u+rwX -- "$private"; fi
+          rm -rf -- "$private" "$RUNNER_TEMP/result.cms" "$RUNNER_TEMP/report-sealing.log"
+
