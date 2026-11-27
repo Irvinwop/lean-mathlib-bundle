@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261127T082339Z-61534b59d1ba
+run-name: One-click score with both README rosters round2-score-rosters 20261127T083242Z-743b7a408c72
 on:
   push:
     branches: [automation]
@@ -15,11 +15,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","fixture":"original","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-original","mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"mint","variant":"candidate","fixture":"alternate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-alternate","mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"server2022","variant":"candidate","fixture":"original","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"server2022","variant":"candidate","fixture":"alternate","runner":"windows-2022","seconds":2160,"minutes":55,"artifact_key":"server2022-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":true,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '9a0f5e1f5766347ff6d3f1d6b8321cad734dc07b'
-      QUEUED_SOURCE_SHA256: '2195a7b5dc659043dcfa09e1332ae168e581e0c0d9bb084022e91f72e6f2d920'
+      SOURCE_COMMIT: '73f507099dd6441839a4df31ae60d9302492c48a'
+      QUEUED_SOURCE_SHA256: '48625ef2bc0265da49ad27cdb028ca65cd4a03ad5393afab37b9e071a262336c'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
@@ -49,8 +49,16 @@ jobs:
           set -euo pipefail
           [[ $RUNNER_ENVIRONMENT == github-hosted ]]
           umask 077
-          root=$(mktemp -d "$RUNNER_TEMP/cypat-score.XXXXXXXX")
-          if [[ $RUNNER_OS == Windows ]]; then root=$(cygpath -am "$root"); fi
+          if [[ $RUNNER_OS == Windows ]]; then
+            # --answers guards path components. Keep its fixture name and suffix
+            # outside the product's protected-path vocabulary.
+            [[ $GITHUB_RUN_ID =~ ^[0-9]+$ && $GITHUB_RUN_ATTEMPT =~ ^[0-9]+$ ]]
+            root="$RUNNER_TEMP/cypat-fixture.$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+            mkdir -- "$root"
+            root=$(cygpath -am "$root")
+          else
+            root=$(mktemp -d "$RUNNER_TEMP/cypat-score.XXXXXXXX")
+          fi
           echo "CYPAT_SCORE_ROOT=$root" >> "$GITHUB_ENV"
           cd "$root"
           mkdir source
