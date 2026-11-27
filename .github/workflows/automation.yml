@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: FreeBSD stock score with alternate accounts and services round2-score 20261127T015245Z-efed2c0a716e
+run-name: Easy-point score from one-click candidates round2-score 20261127T015255Z-aed959a1d229
 on:
   push:
     branches: [automation]
@@ -15,10 +15,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"freebsd","variant":"candidate","freebsd_roster":true,"runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_filesystems":false}]
+        include: [{"os":"freebsd","variant":"candidate","runner":"ubuntu-24.04","seconds":420,"minutes":18,"fixture":"","artifact_key":"freebsd-candidate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '0127e89bd045b293792128852d24ca536623b239'
+      SOURCE_COMMIT: 'aaeba94f7049934738d1f075c0e3e1839cc0a48f'
       QUEUED_SOURCE_SHA256: '47302b668434a6fcfb2a932869c6eadbcd44562c71218b8cd038f7084f79da00'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
