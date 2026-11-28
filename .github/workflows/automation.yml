@@ -1,5 +1,5 @@
 name: Easy-point scoring
-run-name: One-click score with both README rosters round2-score-rosters 20261128T084216Z-de8f686e07d6
+run-name: One-click score with both README rosters round2-score-rosters 20261128T084229Z-b603236c8088
 on:
   push:
     branches: [automation]
@@ -15,11 +15,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: [{"os":"mint","variant":"candidate","fixture":"original","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-original","mint_witness":true,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"mint","variant":"candidate","fixture":"alternate","runner":"ubuntu-22.04","seconds":1800,"minutes":55,"artifact_key":"mint-candidate-alternate","mint_witness":true,"mint_reviewed":false,"mint_roster":true,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
+        include: [{"os":"debian12","variant":"candidate","fixture":"original","runner":"ubuntu-24.04","seconds":2400,"minutes":55,"artifact_key":"debian12-candidate-original","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":false,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false},{"os":"debian12","variant":"candidate","fixture":"alternate","runner":"ubuntu-24.04","seconds":2400,"minutes":55,"artifact_key":"debian12-candidate-alternate","mint_witness":false,"mint_reviewed":false,"mint_roster":false,"debian_roster":true,"debian_malformed":false,"debian_ftp":false,"debian_apt":false,"server_roster":false,"server_iis_seed_only":false,"server_malformed":false,"freebsd_malformed":false,"freebsd_rootfs":"","freebsd_catalog":"","freebsd_quarantine":false,"freebsd_roster":false,"freebsd_filesystems":false}]
     environment: private-fixtures
     env:
-      SOURCE_COMMIT: '824f4db086711ae47d9804a7d1c682d5329ade46'
-      QUEUED_SOURCE_SHA256: '1bbcbb4b400b8bfd43c0a812674d3438b9045e3d76752de38cfda9f6e19ad1c6'
+      SOURCE_COMMIT: '1eeb84bfaae17eaeee7f11cddafb849cdd40577f'
+      QUEUED_SOURCE_SHA256: '5c5efe9b0d412cf38871f272c9731622f8709a8eb81d19cdf72d7c9099d9fbe8'
       CYPAT_SCORE_OS: ${{ matrix.os }}
       CYPAT_SCORE_VARIANT: ${{ matrix.variant }}
       CYPAT_SCORE_SECONDS: ${{ matrix.seconds }}
